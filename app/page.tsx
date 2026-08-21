@@ -9,8 +9,8 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#eef2ef] py-6 sm:py-10 px-4">
       <main className="max-w-[640px] mx-auto w-full">
-        {/* Header */}
-        <header className="flex items-center justify-between pb-4 mb-4 border-b border-[#d3ded7]">
+        {/* Header (Forms-only, no Admin link) */}
+        <header className="flex items-center pb-4 mb-4 border-b border-[#d3ded7]">
           <div className="flex items-center gap-2.5">
             <svg
               className="w-6 h-6 flex-shrink-0"
@@ -34,13 +34,6 @@ export default function HomePage() {
               ReFarm Forms
             </span>
           </div>
-
-          <Link
-            href="/admin"
-            className="text-xs font-semibold text-[#1b6b3a] hover:text-[#14532d] hover:underline focus:outline-none focus:ring-2 focus:ring-[#2f9e44] focus:ring-offset-2 rounded px-1.5 py-1 transition"
-          >
-            Admin
-          </Link>
         </header>
 
         {/* Clean Vertical Form List */}
