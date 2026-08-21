@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReFarm — Statement of Work / Trial Protocol</title>
+<style>
+  :root{
+    --green-900:#0f3d21;
+    --green-800:#14532d;
+    --green-700:#1b6b3a;
+    --green-600:#2f9e44;
+    --green-100:#e6f4ea;
+    --green-50:#f2f9f4;
+    --ink:#1a1f1c;
+    --muted:#5b6b60;
+    --line:#d3ded7;
+    --line-strong:#b7c7bd;
+    --bg:#eef2ef;
+    --white:#ffffff;
+    --amber-bg:#fff8e6;
+    --amber-line:#e6c766;
+    --radius:10px;
+    --shadow:0 1px 3px rgba(15,61,33,.08),0 6px 24px rgba(15,61,33,.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    font-size:14px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- Toolbar ---------- */
+  .toolbar{
+    position:sticky;top:0;z-index:50;
+    background:var(--green-800);
+    color:#fff;
+    display:flex;align-items:center;gap:12px;
+    padding:10px 20px;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+  }
+  .toolbar .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.3px;}
+  .leaf{width:26px;height:26px;flex:0 0 auto;}
+  .toolbar .spacer{flex:1;}
+  .btn{
+    border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;
+    cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:7px;
+  }
+  .btn-primary{background:var(--green-600);color:#fff;}
+  .btn-primary:hover{background:#268a3a;}
+  .btn-ghost{background:rgba(255,255,255,.14);color:#fff;}
+  .btn-ghost:hover{background:rgba(255,255,255,.24);}
+  .btn svg{width:15px;height:15px;}
+  .savenote{font-size:11.5px;opacity:.85;min-width:120px;text-align:right;}
+
+  /* ---------- Page ---------- */
+  .page{max-width:960px;margin:22px auto 60px;padding:0 18px;}
+  .doc{background:var(--white);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;}
+
+  /* ---------- Header ---------- */
+  .header{
+    background:linear-gradient(135deg,var(--green-800),var(--green-700));
+    color:#fff;padding:26px 34px 24px;
+  }
+  .header .top{display:flex;align-items:center;gap:14px;}
+  .header h1{margin:0;font-size:22px;letter-spacing:.5px;}
+  .header .sub{margin:2px 0 0;font-size:12.5px;opacity:.85;text-transform:uppercase;letter-spacing:2px;}
+  .header-leaf{width:40px;height:40px;}
+
+  .meta-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:14px 22px;margin-top:22px;
+  }
+  .meta-grid.two{grid-template-columns:repeat(2,1fr);}
+  .meta-field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;opacity:.85;margin-bottom:4px;}
+  .meta-field input{
+    width:100%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);
+    border-radius:7px;padding:8px 10px;color:#fff;font-size:13px;
+  }
+  .meta-field input::placeholder{color:rgba(255,255,255,.6);}
+  .meta-field input:focus{outline:none;border-color:#fff;background:rgba(255,255,255,.2);}
+
+  /* ---------- Body ---------- */
+  .body{padding:14px 34px 34px;}
+  section{margin-top:26px;}
+  .sec-head{display:flex;align-items:baseline;gap:10px;border-bottom:2px solid var(--green-600);padding-bottom:6px;margin-bottom:6px;}
+  .sec-num{
+    background:var(--green-600);color:#fff;font-size:12px;font-weight:700;
+    width:24px;height:24px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
+  }
+  .sec-title{font-size:16px;font-weight:700;color:var(--green-800);margin:0;}
+  .hint{color:var(--muted);font-size:11.5px;font-style:italic;margin:6px 0 10px;line-height:1.45;}
+
+  .subhead{font-size:13px;font-weight:700;color:var(--green-700);margin:16px 0 8px;display:flex;align-items:center;gap:7px;}
+  .subhead::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--green-600);display:inline-block;}
+
+  textarea,input[type=text],input[type=date],input[type=number],select{
+    font-family:inherit;font-size:13px;color:var(--ink);
+    border:1px solid var(--line-strong);border-radius:8px;padding:9px 11px;width:100%;background:#fff;transition:.15s;
+  }
+  textarea{resize:vertical;min-height:78px;line-height:1.5;}
+  textarea:focus,input:focus,select:focus{outline:none;border-color:var(--green-600);box-shadow:0 0 0 3px var(--green-100);}
+
+  /* ---------- Tables ---------- */
+  table{width:100%;border-collapse:collapse;margin-top:6px;font-size:12.5px;}
+  th{background:var(--green-50);color:var(--green-800);text-align:left;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;border:1px solid var(--line);}
+  td{border:1px solid var(--line);padding:4px;vertical-align:middle;}
+  td input,td textarea,td select{border:none;border-radius:5px;padding:7px 8px;background:transparent;}
+  td input:focus,td textarea:focus,td select:focus{background:var(--green-50);box-shadow:none;}
+  td textarea{min-height:34px;}
+  tr:nth-child(even) td{background:#fbfdfb;}
+  .label-cell{background:var(--green-50);font-weight:600;color:var(--green-800);width:36%;padding:9px 11px;}
+
+  .row-tools{white-space:nowrap;width:34px;text-align:center;}
+  .del-row{background:none;border:none;color:#c0392b;cursor:pointer;font-size:16px;line-height:1;padding:2px 6px;border-radius:5px;}
+  .del-row:hover{background:#fdecea;}
+  .add-row{
+    margin-top:8px;background:var(--green-100);color:var(--green-800);border:1px dashed var(--green-600);
+    border-radius:8px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s;
+  }
+  .add-row:hover{background:var(--green-600);color:#fff;}
+
+  /* ---------- Choice chips ---------- */
+  .choices{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;}
+  .chip{
+    border:1px solid var(--line-strong);border-radius:8px;padding:9px 14px;font-size:13px;cursor:pointer;
+    display:flex;align-items:center;gap:8px;background:#fff;transition:.15s;user-select:none;
+  }
+  .chip:hover{border-color:var(--green-600);}
+  .chip input{accent-color:var(--green-600);width:15px;height:15px;}
+  .chip.checked{background:var(--green-100);border-color:var(--green-600);color:var(--green-800);font-weight:600;}
+
+  .note-box{
+    background:var(--amber-bg);border:1px solid var(--amber-line);border-left:4px solid #d4a017;
+    border-radius:8px;padding:12px 15px;font-size:12.5px;color:#6b5100;line-height:1.55;margin-top:6px;
+  }
+  .note-box b{color:#7a5c00;}
+
+  .baseline-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  @media(max-width:720px){.baseline-grid{grid-template-columns:1fr;}.meta-grid{grid-template-columns:1fr 1fr;}}
+
+  /* ---------- Signatures ---------- */
+  .sign-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:8px;}
+  .sign-card{border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--green-50);}
+  .sign-card h4{margin:0 0 12px;color:var(--green-800);font-size:13px;text-transform:uppercase;letter-spacing:1px;}
+  .sign-field{margin-bottom:10px;}
+  .sign-field label{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);display:block;margin-bottom:3px;}
+  .sign-line{border-bottom:1.5px solid var(--line-strong);height:34px;margin-top:4px;}
+  @media(max-width:720px){.sign-grid{grid-template-columns:1fr;}}
+
+  .footer{padding:16px 34px;background:var(--green-50);border-top:1px solid var(--line);color:var(--muted);font-size:11px;text-align:center;}
+
+  /* ---------- Conditional fields ---------- */
+  .mini{font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);display:block;margin-bottom:3px;}
+  .cond-off{opacity:.5;transition:opacity .2s;}
+  .cond-off input,.cond-off textarea,.cond-off select{background:#eef1ef !important;cursor:not-allowed;color:#8a988f;}
+  tr.cond-off td.label-cell{opacity:.65;}
+  .yn{display:flex;gap:8px;}
+  @media print{
+    .cond-off{display:none !important;}
+    tr.cond-off{display:none !important;}
+  }
+
+  /* ---------- Print ---------- */
+  @media print{
+    body{background:#fff;font-size:11px;}
+    .toolbar{display:none !important;}
+    .page{margin:0;max-width:none;padding:0;}
+    .doc{box-shadow:none;border-radius:0;}
+    .header{-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:18px 22px;}
+    .body{padding:8px 22px 22px;}
+    section{margin-top:16px;page-break-inside:avoid;}
+    .sec-head,.subhead{page-break-after:avoid;}
+    table,.sign-grid,.baseline-grid{page-break-inside:avoid;}
+    .add-row,.row-tools,.del-row{display:none !important;}
+    td input,td textarea,td select,textarea,input[type=text],input[type=date],input[type=number],select{
+      border:none;background:transparent;
+    }
+    th,td,.label-cell{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .chip{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    input:focus,textarea:focus,select:focus{box-shadow:none;}
+    .footer{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="brand">
+    <svg class="leaf" viewBox="0 0 24 24" fill="none"><path d="M4 20c0-8 6-14 16-16 0 10-6 16-16 16z" fill="#8fd19e"/><path d="M4 20C8 14 12 11 18 9" stroke="#14532d" stroke-width="1.6" stroke-linecap="round"/></svg>
+    ReFarm · SOW
+  </div>
+  <div class="spacer"></div>
+  <span class="savenote" id="saveNote"></span>
+  <button class="btn btn-ghost" onclick="clearForm()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m-9 0v14a2 2 0 002 2h6a2 2 0 002-2V6"/></svg>
+    Clear
+  </button>
+  <button class="btn btn-primary" onclick="window.print()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg>
+    Export / Print PDF
+  </button>
+</div>
+
+<div class="page">
+<form class="doc" id="sowForm" autocomplete="off">
+
+  <!-- ============ HEADER ============ -->
+  <div class="header">
+    <div class="top">
+      <svg class="header-leaf" viewBox="0 0 24 24" fill="none"><path d="M4 20c0-8 6-14 16-16 0 10-6 16-16 16z" fill="#a7e0b4"/><path d="M4 20C8 14 12 11 18 9" stroke="#0f3d21" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <div>
+        <h1>Statement of Work &amp; Trial Protocol</h1>
+        <div class="sub">ReFarm Global</div>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-field"><label>Project Name / Title</label><input type="text" data-k="proj_name" placeholder="e.g. ReFarm Field Trial — Al Ain"></div>
+      <div class="meta-field"><label>Project Location / Site</label><input type="text" data-k="proj_location" placeholder="Farm, city, country"></div>
+      <div class="meta-field"><label>SOW Reference No.</label><input type="text" data-k="proj_ref" placeholder="RF-SOW-2026-000"></div>
+      <div class="meta-field"><label>Client / Partner</label><input type="text" data-k="proj_client" placeholder="Client organisation"></div>
+      <div class="meta-field"><label>Crop / Commodity</label><input type="text" data-k="proj_crop" placeholder="e.g. Tomato, Date Palm"></div>
+      <div class="meta-field"><label>Date</label><input type="date" data-k="proj_date"></div>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- 1. Project Overview -->
+    <section>
+      <div class="sec-head"><span class="sec-num">1</span><h2 class="sec-title">Project Overview</h2></div>
+      <p class="hint">General introduction of the project: location, involved parties, collaboration framework, main purpose, the ReFarm solution(s) involved, and the expected impact or value generated.</p>
+      <textarea data-k="overview" rows="4"></textarea>
+    </section>
+
+    <!-- 2. Objective -->
+    <section>
+      <div class="sec-head"><span class="sec-num">2</span><h2 class="sec-title">Objective</h2></div>
+      <p class="hint">Main purpose of the project and why it is being conducted — expected outcomes, problems addressed, and the goals the project aims to achieve.</p>
+      <textarea data-k="objective" rows="4"></textarea>
+    </section>
+
+    <!-- 3. Scope of Work -->
+    <section>
+      <div class="sec-head"><span class="sec-num">3</span><h2 class="sec-title">Scope of Work</h2></div>
+      <p class="hint">Activities, tasks, and boundaries of the project — what is included in implementation and which activities are performed by each party.</p>
+      <textarea data-k="scope" rows="4"></textarea>
+    </section>
+
+    <!-- 4. Timeline (overview) -->
+    <section>
+      <div class="sec-head"><span class="sec-num">4</span><h2 class="sec-title">Timeline (Overview)</h2></div>
+      <p class="hint">Expected project duration &amp; implementation period — overview of the project phases and estimated completion dates.</p>
+      <textarea data-k="timeline_overview" rows="3"></textarea>
+    </section>
+
+    <!-- 5. Deliverables -->
+    <section>
+      <div class="sec-head"><span class="sec-num">5</span><h2 class="sec-title">Deliverables</h2></div>
+      <p class="hint">Expected outputs and results provided during each phase. Each deliverable includes the responsible workstream and expected completion timing.</p>
+      <table id="tbl-deliverables">
+        <thead><tr><th style="width:12%">Phase</th><th>Deliverable</th><th style="width:22%">Workstream</th><th style="width:20%">Indicative Timing</th><th class="row-tools"></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button type="button" class="add-row" data-add="deliverables">+ Add deliverable</button>
+    </section>
+
+    <!-- 6. Responsibilities -->
+    <section>
+      <div class="sec-head"><span class="sec-num">6</span><h2 class="sec-title">Responsibilities</h2></div>
+      <p class="hint">Roles and responsibilities of each party — ownership of activities, required support, and accountability throughout implementation.</p>
+      <table id="tbl-resp">
+        <thead><tr><th>Activity</th><th style="width:22%">ReFarm</th><th style="width:22%">Client</th><th class="row-tools"></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button type="button" class="add-row" data-add="resp">+ Add activity</button>
+    </section>
+
+    <!-- Important Note -->
+    <section>
+      <div class="subhead">Important Note</div>
+      <div class="note-box">
+        Any intentional sabotage, interference, or unauthorized actions that compromise the trial may result in fees. The party responsible for such actions shall be liable for any resulting losses or damages. Any legal action shall be subject to <b>Dubai laws</b> and handled through the appropriate legal channels.
+      </div>
+    </section>
+
+    <!-- 7. Protocol — Baseline Assessment -->
+    <section>
+      <div class="sec-head"><span class="sec-num">7</span><h2 class="sec-title">Protocol — Baseline Assessment</h2></div>
+      <p class="hint">Initial conditions of the site before implementing ReFarm solutions. Baseline data is the reference point to evaluate improvements and measure performance.</p>
+
+      <div class="baseline-grid">
+        <div>
+          <div class="subhead">Soil</div>
+          <table>
+            <tbody id="soil-body"></tbody>
+          </table>
+        </div>
+        <div>
+          <div class="subhead">Plant</div>
+          <table>
+            <tbody id="plant-body"></tbody>
+          </table>
+          <div class="subhead">Irrigation</div>
+          <table>
+            <tbody id="irrig-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products Used -->
+    <section>
+      <div class="subhead">Products Used</div>
+      <p class="hint">All ReFarm products or solutions applied during the project — purpose, application rate, and frequency of use.</p>
+      <table id="tbl-products">
+        <thead><tr><th style="width:22%">Product / Solution</th><th>Purpose</th><th style="width:20%">Application Rate</th><th style="width:20%">Frequency</th><th class="row-tools"></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button type="button" class="add-row" data-add="products">+ Add product</button>
+    </section>
+
+    <!-- Trial Design -->
+    <section>
+      <div class="subhead">Trial Design</div>
+      <p class="hint">Specify the trial category.</p>
+      <div class="choices" data-radio="trial_design">
+        <label class="chip"><input type="radio" name="trial_design" value="Commercial Trial">Commercial Trial</label>
+        <label class="chip"><input type="radio" name="trial_design" value="Semi Commercial Trial">Semi Commercial Trial</label>
+        <label class="chip"><input type="radio" name="trial_design" value="Proof of Concept Trial">Proof of Concept Trial</label>
+        <label class="chip"><input type="radio" name="trial_design" value="Other">Other</label>
+      </div>
+      <div id="trial-other" class="cond cond-off" style="margin-top:10px;max-width:340px"><input type="text" data-k="trial_design_other" placeholder="Other — please specify…" disabled></div>
+    </section>
+
+    <!-- 8. Application Protocol -->
+    <section>
+      <div class="sec-head"><span class="sec-num">8</span><h2 class="sec-title">Application Protocol</h2></div>
+      <p class="hint">Detailed procedure for applying ReFarm solutions, ensuring consistency and traceability of all applications.</p>
+      <div style="overflow-x:auto">
+      <table id="tbl-application">
+        <thead><tr>
+          <th style="width:34px">#</th><th>Date</th><th>Product</th><th>Dosage</th><th>Dilution Rate</th>
+          <th>Application Method</th><th>Operator</th><th>Weather</th><th>Remarks</th><th class="row-tools"></th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+      </div>
+      <button type="button" class="add-row" data-add="application">+ Add application</button>
+    </section>
+
+    <!-- 9. Irrigation Protocol -->
+    <section>
+      <div class="sec-head"><span class="sec-num">9</span><h2 class="sec-title">Irrigation Protocol</h2></div>
+      <p class="hint">Irrigation management strategy — initial conditions, reduction targets, and monitoring approach.</p>
+      <table>
+        <tbody id="irrigprot-body"></tbody>
+      </table>
+    </section>
+
+    <!-- 10. Sampling Protocol -->
+    <section>
+      <div class="sec-head"><span class="sec-num">10</span><h2 class="sec-title">Sampling Protocol</h2></div>
+      <p class="hint">Sampling methodology for evaluating soil and product performance — sampling locations, frequency, and laboratory requirements.</p>
+      <table id="tbl-sampling">
+        <thead><tr><th style="width:30%">Sample No.</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="subhead">Laboratory Analysis</div>
+      <div class="choices yn" data-radio="lab_required">
+        <label class="chip"><input type="radio" name="lab_required" value="Yes">Yes</label>
+        <label class="chip"><input type="radio" name="lab_required" value="No">No</label>
+      </div>
+      <div id="lab-detail" class="cond cond-off" style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:660px">
+        <div><label class="mini">Laboratory Name</label><input type="text" data-k="lab_name" disabled></div>
+        <div><label class="mini">Analysis Method / Parameters</label><input type="text" data-k="lab_method" disabled></div>
+      </div>
+
+      <div class="subhead">Plant Sampling</div>
+      <p class="hint">Plant sampling requirements to evaluate plant health, development, and response to ReFarm solutions.</p>
+      <table>
+        <tbody id="plantsamp-body"></tbody>
+      </table>
+      <div style="margin-top:12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <span style="font-weight:600;color:var(--green-800);font-size:13px">Sap Analysis</span>
+        <div class="choices yn" data-radio="sap_analysis" style="margin:0">
+          <label class="chip"><input type="radio" name="sap_analysis" value="Yes">Yes</label>
+          <label class="chip"><input type="radio" name="sap_analysis" value="No">No</label>
+        </div>
+      </div>
+      <div id="sap-detail" class="cond cond-off" style="margin-top:10px;max-width:660px">
+        <label class="mini">Sap analysis — laboratory / parameters</label>
+        <input type="text" data-k="sap_detail" disabled placeholder="e.g. nutrient sap testing, lab, target elements">
+      </div>
+    </section>
+
+    <!-- 11. Monitoring Plan -->
+    <section>
+      <div class="sec-head"><span class="sec-num">11</span><h2 class="sec-title">Monitoring Plan</h2></div>
+      <p class="hint">Monitoring approach, frequency, and parameters used to evaluate progress and measure performance against KPIs.</p>
+      <div class="subhead">Monitoring Frequency</div>
+      <div class="choices" data-radio="mon_freq">
+        <label class="chip"><input type="radio" name="mon_freq" value="Weekly">Weekly</label>
+        <label class="chip"><input type="radio" name="mon_freq" value="Every two weeks">Every two weeks</label>
+        <label class="chip"><input type="radio" name="mon_freq" value="Monthly">Monthly</label>
+      </div>
+
+      <div class="subhead">Monitoring Parameters</div>
+      <table id="tbl-monitor">
+        <thead><tr><th style="width:26%">Parameter</th><th style="width:12%">Monitor</th><th>Method / Instrument</th><th style="width:20%">Frequency</th><th>Notes</th></tr></thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="subhead">Data Collection Responsibilities</div>
+      <p class="hint">Responsibility of each stakeholder for collecting, recording, and providing project data required for evaluation.</p>
+      <table id="tbl-datacoll">
+        <thead><tr><th>Data / Activity</th><th style="width:24%">Responsible Party</th><th style="width:22%">Method</th><th class="row-tools"></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button type="button" class="add-row" data-add="datacoll">+ Add data item</button>
+    </section>
+
+    <!-- 12. KPI -->
+    <section>
+      <div class="sec-head"><span class="sec-num">12</span><h2 class="sec-title">KPI</h2></div>
+      <p class="hint">Measurable indicators used to evaluate project success and determine whether the objectives have been achieved.</p>
+      <textarea data-k="kpi" rows="4"></textarea>
+    </section>
+
+    <!-- 13. Timeline (detailed) -->
+    <section>
+      <div class="sec-head"><span class="sec-num">13</span><h2 class="sec-title">Timeline (Detailed Schedule)</h2></div>
+      <p class="hint">Detailed implementation schedule showing project phases, duration, and responsible parties.</p>
+      <table id="tbl-schedule">
+        <thead><tr><th style="width:40%">Phase</th><th style="width:30%">Duration</th><th>Responsible</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <!-- 14. Roles & Responsibilities -->
+    <section>
+      <div class="sec-head"><span class="sec-num">14</span><h2 class="sec-title">Roles &amp; Responsibilities</h2></div>
+      <p class="hint">Key personnel involved in project execution and their responsibilities throughout the project lifecycle.</p>
+      <table id="tbl-roles">
+        <thead><tr><th style="width:26%">Role</th><th style="width:28%">Name</th><th>Responsibilities</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <!-- 15. Approvals -->
+    <section>
+      <div class="sec-head"><span class="sec-num">15</span><h2 class="sec-title">Approvals &amp; Sign-off</h2></div>
+      <div class="sign-grid">
+        <div class="sign-card">
+          <h4>Client Approval</h4>
+          <div class="sign-field"><label>Name</label><input type="text" data-k="client_name"></div>
+          <div class="sign-field"><label>Position</label><input type="text" data-k="client_position"></div>
+          <div class="sign-field"><label>Signature</label><div class="sign-line"></div></div>
+          <div class="sign-field"><label>Date</label><input type="date" data-k="client_sign_date"></div>
+        </div>
+        <div class="sign-card">
+          <h4>ReFarm Approval</h4>
+          <div class="sign-field"><label>Trial Supervisor — Name</label><input type="text" data-k="rf_supervisor"></div>
+          <div class="sign-field"><label>Trial Manager — Name</label><input type="text" data-k="rf_manager"></div>
+          <div class="sign-field"><label>High Management — Name &amp; Position</label><input type="text" data-k="rf_highmgmt"></div>
+          <div class="sign-field"><label>Signature</label><div class="sign-line"></div></div>
+          <div class="sign-field"><label>Date</label><input type="date" data-k="rf_sign_date"></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="footer">
+    ReFarm Global · Statement of Work &amp; Trial Protocol · This document is subject to the laws of Dubai, UAE.
+  </div>
+
+</form>
+</div>
+
+<script>
+/* Safety polyfill for older browsers (modern ones already support this) */
+if(window.NodeList && !NodeList.prototype.forEach){NodeList.prototype.forEach=Array.prototype.forEach;}
+
+/* ---------------- Table seed data ---------------- */
+const seeds = {
+  deliverables:{cols:[
+    {type:'text',ph:'1'},{type:'textarea',ph:'Deliverable'},{type:'text',ph:'Workstream'},{type:'text',ph:'Timing'}
+  ], del:true, rows:[['1','','',''],['2','','','']]},
+
+  resp:{cols:[
+    {type:'textarea',ph:'Activity'},{type:'text',ph:''},{type:'text',ph:''}
+  ], del:true, rows:[['ACTION 1','',''],['ACTION 2','',''],['ACTION 3','',''],['ACTION 4','',''],['ACTION 5','','']]},
+
+  products:{cols:[
+    {type:'text'},{type:'text',ph:'Purpose'},{type:'text',ph:'Rate'},{type:'text',ph:'Frequency'}
+  ], del:true, rows:[['ReSoil','Soil amendment','',''],['BioCareX','Liquid biofertilizer','',''],['ViTech','Biostimulant','',''],['Other','','','']]},
+
+  application:{cols:[
+    {type:'auto'},{type:'date'},{type:'text'},{type:'text'},{type:'text'},{type:'text'},{type:'text'},{type:'text'},{type:'textarea'}
+  ], del:true, rows:[Array(9).fill('')]},
+
+  datacoll:{cols:[
+    {type:'text',ph:'Data / activity'},{type:'text',ph:'Party'},{type:'text',ph:'Method'}
+  ], del:true, rows:[
+    ['Field measurements','',''],['Lab analysis','',''],['Photographic records','',''],['Drone survey','','']
+  ]}
+};
+
+/* label:value vertical tables */
+const kvTables = {
+  'soil-body':['pH','EC','Organic Matter','Moisture','Texture','Nutrient Analysis'],
+  'plant-body':['Plant height','Stem diameter','Leaf colour','Root condition','Pest/Disease observations'],
+  'irrig-body':['Daily water consumption','Irrigation frequency','Irrigation duration'],
+  'irrigprot-body':['Initial Irrigation Schedule','Reduction Plan','Target Water Saving','Monitoring Frequency','Responsible Party'],
+  'plantsamp-body':['Number of Leaf Samples','Number of Root Samples']
+};
+
+const monitorParams=['Plant height','Stem diameter','Leaf count','Chlorophyll','Root development','Soil moisture','Soil EC','Soil pH','Irrigation consumption','Biomass','Pest observations'];
+const scheduleRows=['Site Assessment','Sampling','Baseline Report','Product Application','Monitoring','Data Analysis','Final Report'];
+const roleRows=['Project Manager','Agronomy Team','Laboratory','Operations Team','Client Representative'];
+const samplingRows=['Sample Location / Map Coordinates','Sampling Depth','Laboratory Analysis Required'];
+
+let uid=0;
+function cellInput(c,val){
+  val=val||'';
+  if(c.type==='auto') return '<input type="text" data-cell readonly value="">';
+  if(c.type==='textarea') return `<textarea data-cell placeholder="${c.ph||''}">${val}</textarea>`;
+  if(c.type==='date') return '<input type="date" data-cell>';
+  return `<input type="text" data-cell placeholder="${c.ph||''}" value="${val}">`;
+}
+
+function buildRow(key,values){
+  const s=seeds[key];
+  const tr=document.createElement('tr');
+  s.cols.forEach((c,i)=>{
+    const td=document.createElement('td');
+    td.innerHTML=cellInput(c,values?values[i]:'');
+    tr.appendChild(td);
+  });
+  if(s.del){
+    const td=document.createElement('td');
+    td.className='row-tools';
+    td.innerHTML='<button type="button" class="del-row" title="Remove">&times;</button>';
+    td.querySelector('button').onclick=()=>{tr.remove();renumber(key);save();};
+    tr.appendChild(td);
+  }
+  return tr;
+}
+function renumber(key){
+  if(key!=='application') return;
+  document.querySelectorAll('#tbl-application tbody tr').forEach((tr,i)=>{
+    const a=tr.querySelector('input[readonly]'); if(a) a.value=i+1;
+  });
+}
+function addRow(key){
+  const tb=document.querySelector('#tbl-'+key+' tbody');
+  tb.appendChild(buildRow(key));
+  renumber(key);
+  save();
+}
+
+/* build seeded tables */
+Object.keys(seeds).forEach(key=>{
+  const tb=document.querySelector('#tbl-'+key+' tbody');
+  seeds[key].rows.forEach(r=>tb.appendChild(buildRow(key,r)));
+  renumber(key);
+});
+
+/* build key/value tables */
+Object.keys(kvTables).forEach(id=>{
+  const labels=kvTables[id];
+  const tb=document.getElementById(id);
+  labels.forEach(l=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="label-cell">${l}</td><td><input type="text" data-cell></td>`;
+    tb.appendChild(tr);
+  });
+});
+
+/* sampling protocol grid (rows x 5 samples) */
+(function(){
+  const tb=document.querySelector('#tbl-sampling tbody');
+  samplingRows.forEach(r=>{
+    const tr=document.createElement('tr');
+    let cells=`<td class="label-cell">${r}</td>`;
+    for(let i=0;i<5;i++) cells+='<td><input type="text" data-cell></td>';
+    tr.innerHTML=cells; tb.appendChild(tr);
+  });
+})();
+
+/* monitoring parameters */
+(function(){
+  const tb=document.querySelector('#tbl-monitor tbody');
+  monitorParams.forEach(p=>{
+    const tr=document.createElement('tr');
+    tr.className='cond-off';
+    tr.innerHTML=`<td class="label-cell">${p}</td>
+      <td style="text-align:center"><input type="checkbox" data-cell data-trigger class="mon-trig" style="accent-color:#2f9e44;width:16px;height:16px"></td>
+      <td><input type="text" data-cell disabled></td>
+      <td><input type="text" data-cell disabled></td>
+      <td><input type="text" data-cell disabled></td>`;
+    tb.appendChild(tr);
+  });
+})();
+
+/* schedule */
+(function(){
+  const tb=document.querySelector('#tbl-schedule tbody');
+  scheduleRows.forEach(p=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="label-cell">${p}</td><td><input type="text" data-cell></td><td><input type="text" data-cell></td>`;
+    tb.appendChild(tr);
+  });
+})();
+
+/* roles */
+(function(){
+  const tb=document.querySelector('#tbl-roles tbody');
+  roleRows.forEach(p=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="label-cell">${p}</td><td><input type="text" data-cell></td><td><input type="text" data-cell></td>`;
+    tb.appendChild(tr);
+  });
+})();
+
+/* Products 'Other' row -> checkbox reveals name + details */
+(function(){
+  const rows=document.querySelectorAll('#tbl-products tbody tr');
+  const other=rows[rows.length-1];
+  other.id='prod-other-row';
+  other.classList.add('cond-off');
+  const tds=other.querySelectorAll('td');
+  tds[0].innerHTML=`<label style="display:flex;align-items:center;gap:7px;padding:2px 4px">
+      <input type="checkbox" data-cell data-trigger class="prod-trig" style="accent-color:#2f9e44;width:15px;height:15px">
+      <input type="text" data-cell placeholder="Other — specify" disabled></label>`;
+  tds.forEach((td,i)=>{ if(i>0) td.querySelectorAll('input,textarea').forEach(x=>x.disabled=true); });
+})();
+
+/* ---------------- Conditional logic ---------------- */
+function setCond(el,on){
+  if(!el) return;
+  el.classList.toggle('cond-off',!on);
+  el.querySelectorAll('input,textarea,select').forEach(i=>{ if(i.dataset.trigger!==undefined) return; i.disabled=!on; });
+}
+function refreshConditions(){
+  const td=document.querySelector('input[name="trial_design"]:checked');
+  setCond(document.getElementById('trial-other'), !!(td&&td.value==='Other'));
+  const lr=document.querySelector('input[name="lab_required"]:checked');
+  setCond(document.getElementById('lab-detail'), !!(lr&&lr.value==='Yes'));
+  const sa=document.querySelector('input[name="sap_analysis"]:checked');
+  setCond(document.getElementById('sap-detail'), !!(sa&&sa.value==='Yes'));
+  const pt=document.querySelector('.prod-trig');
+  setCond(document.getElementById('prod-other-row'), !!(pt&&pt.checked));
+  document.querySelectorAll('.mon-trig').forEach(cb=>setCond(cb.closest('tr'),cb.checked));
+}
+
+/* add-row buttons */
+document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>addRow(b.dataset.add));
+
+/* chip highlight */
+function refreshChips(){
+  document.querySelectorAll('.chip').forEach(ch=>{
+    const inp=ch.querySelector('input');
+    ch.classList.toggle('checked',inp.checked);
+  });
+}
+document.addEventListener('change',()=>{refreshChips();refreshConditions();save();});
+
+/* ---------------- Autosave (localStorage, offline) ---------------- */
+const KEY='refarm_sow_v1';
+function save(){
+  try{
+    const data={fields:{},radios:{},cells:[],checks:[]};
+    document.querySelectorAll('[data-k]').forEach(el=>data.fields[el.dataset.k]=el.value);
+    document.querySelectorAll('input[type=radio]:checked').forEach(r=>data.radios[r.name]=r.value);
+    // rebuildable dynamic table row counts
+    data.rowCounts={};
+    Object.keys(seeds).forEach(k=>data.rowCounts[k]=document.querySelectorAll('#tbl-'+k+' tbody tr').length);
+    // capture all cell values in DOM order
+    document.querySelectorAll('[data-cell]').forEach(el=>{
+      if(el.type==='checkbox') data.cells.push(el.checked?'1':'0');
+      else data.cells.push(el.value);
+    });
+    localStorage.setItem(KEY,JSON.stringify(data));
+    flash('Saved ✓');
+  }catch(e){/* offline file may block storage; ignore */}
+}
+function flash(t){const n=document.getElementById('saveNote');n.textContent=t;clearTimeout(flash._t);flash._t=setTimeout(()=>n.textContent='',1500);}
+
+function load(){
+  let raw;try{raw=localStorage.getItem(KEY);}catch(e){return;}
+  if(!raw) return;
+  try{
+    const data=JSON.parse(raw);
+    // restore dynamic row counts first
+    if(data.rowCounts){
+      Object.keys(seeds).forEach(k=>{
+        const tb=document.querySelector('#tbl-'+k+' tbody');
+        const want=data.rowCounts[k]||0, have=tb.children.length;
+        for(let i=have;i<want;i++) tb.appendChild(buildRow(k));
+        renumber(k);
+      });
+    }
+    const F=data.fields||{};Object.keys(F).forEach(k=>{const el=document.querySelector(`[data-k="${k}"]`);if(el)el.value=F[k];});
+    const R=data.radios||{};Object.keys(R).forEach(n=>{const el=document.querySelector(`input[name="${n}"][value="${R[n]}"]`);if(el)el.checked=true;});
+    const cells=document.querySelectorAll('[data-cell]');
+    (data.cells||[]).forEach((v,i)=>{const el=cells[i];if(!el)return;if(el.type==='checkbox')el.checked=(v==='1');else if(!el.readOnly)el.value=v;});
+    renumber('application');
+    refreshChips();
+    refreshConditions();
+  }catch(e){}
+}
+
+function clearForm(){
+  if(!confirm('Clear all fields? This cannot be undone.')) return;
+  try{localStorage.removeItem(KEY);}catch(e){}
+  location.reload();
+}
+
+document.addEventListener('input',()=>save());
+window.addEventListener('load',()=>{load();refreshChips();refreshConditions();});
+</script>
+</body>
+</html>

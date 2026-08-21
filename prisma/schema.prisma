@@ -1,0 +1,25 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Submission {
+  id          String   @id @default(cuid())
+  formSlug    String   // e.g. "sow", "sales-activity-card", "ecofarm-phase-0-1"
+  formTitle   String   // human label snapshot
+  projectName String?  // denormalized for list/filter
+  clientName  String?  // denormalized for list/filter
+  status      String   @default("submitted") // draft | submitted
+  data        Json     // the full field payload
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([formSlug])
+  @@index([clientName])
+  @@index([projectName])
+  @@index([createdAt])
+}

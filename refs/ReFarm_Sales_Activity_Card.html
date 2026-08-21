@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReFarm — Sales Activity Card</title>
+<style>
+  :root{
+    --green-900:#0f3d21;--green-800:#14532d;--green-700:#1b6b3a;--green-600:#2f9e44;
+    --green-100:#e6f4ea;--green-50:#f2f9f4;--ink:#1a1f1c;--muted:#5b6b60;
+    --line:#d3ded7;--line-strong:#b7c7bd;--bg:#eef2ef;--white:#ffffff;
+    --amber-bg:#fff8e6;--amber-line:#e6c766;--radius:10px;
+    --shadow:0 1px 3px rgba(15,61,33,.08),0 6px 24px rgba(15,61,33,.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+
+  /* Toolbar */
+  .toolbar{position:sticky;top:0;z-index:50;background:var(--green-800);color:#fff;display:flex;align-items:center;gap:12px;padding:10px 20px;box-shadow:0 2px 10px rgba(0,0,0,.15);}
+  .toolbar .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.3px;}
+  .leaf{width:26px;height:26px;flex:0 0 auto;}
+  .toolbar .spacer{flex:1;}
+  .btn{border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:7px;}
+  .btn-primary{background:var(--green-600);color:#fff;}
+  .btn-primary:hover{background:#268a3a;}
+  .btn-ghost{background:rgba(255,255,255,.14);color:#fff;}
+  .btn-ghost:hover{background:rgba(255,255,255,.24);}
+  .btn svg{width:15px;height:15px;}
+  .savenote{font-size:11.5px;opacity:.85;min-width:110px;text-align:right;}
+
+  /* Page */
+  .page{max-width:960px;margin:22px auto 60px;padding:0 18px;}
+  .doc{background:var(--white);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;}
+
+  /* Header */
+  .header{background:linear-gradient(135deg,var(--green-800),var(--green-700));color:#fff;padding:26px 34px 24px;}
+  .header .top{display:flex;align-items:center;gap:14px;}
+  .header h1{margin:0;font-size:22px;letter-spacing:.5px;}
+  .header .sub{margin:2px 0 0;font-size:12.5px;opacity:.85;text-transform:uppercase;letter-spacing:2px;}
+  .header-leaf{width:40px;height:40px;}
+  .meta-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 22px;margin-top:22px;}
+  .meta-field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;opacity:.85;margin-bottom:4px;}
+  .meta-field input{width:100%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);border-radius:7px;padding:8px 10px;color:#fff;font-size:13px;}
+  .meta-field input::placeholder{color:rgba(255,255,255,.6);}
+  .meta-field input:focus{outline:none;border-color:#fff;background:rgba(255,255,255,.2);}
+
+  /* Body */
+  .body{padding:14px 34px 34px;}
+  section{margin-top:26px;}
+  .sec-head{display:flex;align-items:baseline;gap:10px;border-bottom:2px solid var(--green-600);padding-bottom:6px;margin-bottom:6px;}
+  .sec-num{background:var(--green-600);color:#fff;font-size:12px;font-weight:700;width:24px;height:24px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .sec-title{font-size:16px;font-weight:700;color:var(--green-800);margin:0;}
+  .hint{color:var(--muted);font-size:11.5px;font-style:italic;margin:6px 0 10px;line-height:1.45;}
+  .subhead{font-size:13px;font-weight:700;color:var(--green-700);margin:16px 0 8px;display:flex;align-items:center;gap:7px;}
+  .subhead::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--green-600);display:inline-block;}
+
+  label.fld{display:block;font-size:12px;font-weight:600;color:var(--green-800);margin:14px 0 5px;}
+  label.fld .q{font-weight:400;color:var(--muted);font-style:italic;font-size:11px;}
+  textarea,input[type=text],input[type=date],input[type=number],input[type=email],input[type=tel],select{
+    font-family:inherit;font-size:13px;color:var(--ink);border:1px solid var(--line-strong);border-radius:8px;padding:9px 11px;width:100%;background:#fff;transition:.15s;}
+  textarea{resize:vertical;min-height:70px;line-height:1.5;}
+  textarea:focus,input:focus,select:focus{outline:none;border-color:var(--green-600);box-shadow:0 0 0 3px var(--green-100);}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 16px;}
+  @media(max-width:720px){.grid2,.grid4,.meta-grid{grid-template-columns:1fr;}}
+
+  /* Tables */
+  table{width:100%;border-collapse:collapse;margin-top:6px;font-size:12.5px;}
+  th{background:var(--green-50);color:var(--green-800);text-align:left;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;border:1px solid var(--line);}
+  td{border:1px solid var(--line);padding:4px;vertical-align:middle;}
+  td input,td textarea,td select{border:none;border-radius:5px;padding:7px 8px;background:transparent;}
+  td input:focus,td textarea:focus{background:var(--green-50);box-shadow:none;}
+  tr:nth-child(even) td{background:#fbfdfb;}
+  .row-tools{white-space:nowrap;width:34px;text-align:center;}
+  .del-row{background:none;border:none;color:#c0392b;cursor:pointer;font-size:16px;line-height:1;padding:2px 6px;border-radius:5px;}
+  .del-row:hover{background:#fdecea;}
+  .add-row{margin-top:8px;background:var(--green-100);color:var(--green-800);border:1px dashed var(--green-600);border-radius:8px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s;}
+  .add-row:hover{background:var(--green-600);color:#fff;}
+
+  /* Choice chips */
+  .choices{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;}
+  .choices.yn{gap:8px;}
+  .chip{border:1px solid var(--line-strong);border-radius:8px;padding:9px 14px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;background:#fff;transition:.15s;user-select:none;}
+  .chip:hover{border-color:var(--green-600);}
+  .chip input{accent-color:var(--green-600);width:15px;height:15px;}
+  .chip.checked{background:var(--green-100);border-color:var(--green-600);color:var(--green-800);font-weight:600;}
+
+  /* File upload */
+  .file-field{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:6px;}
+  .file-btn{display:inline-flex;align-items:center;gap:7px;background:var(--green-100);color:var(--green-800);border:1px dashed var(--green-600);border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap;}
+  .file-btn:hover{background:var(--green-600);color:#fff;}
+  .file-btn svg{width:14px;height:14px;}
+  .file-name{flex:1;min-width:200px;max-width:420px;}
+
+  .note-box{background:var(--amber-bg);border:1px solid var(--amber-line);border-left:4px solid #d4a017;border-radius:8px;padding:12px 15px;font-size:12.5px;color:#6b5100;line-height:1.55;margin-top:6px;}
+
+  /* Conditional */
+  .mini{font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);display:block;margin-bottom:3px;}
+  .cond-off{opacity:.5;transition:opacity .2s;}
+  .cond-off input,.cond-off textarea,.cond-off select{background:#eef1ef !important;cursor:not-allowed;color:#8a988f;}
+  .cond-off .file-btn{background:#eef1ef !important;border-color:var(--line-strong) !important;color:#8a988f !important;cursor:not-allowed;}
+  .cond-block{border-left:3px solid var(--green-600);padding-left:14px;margin-top:10px;}
+
+  .footer{padding:16px 34px;background:var(--green-50);border-top:1px solid var(--line);color:var(--muted);font-size:11px;text-align:center;}
+
+  @media print{
+    body{background:#fff;font-size:11px;}
+    .toolbar{display:none !important;}
+    .page{margin:0;max-width:none;padding:0;}
+    .doc{box-shadow:none;border-radius:0;}
+    .header{-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:18px 22px;}
+    .body{padding:8px 22px 22px;}
+    section{margin-top:16px;page-break-inside:avoid;}
+    .sec-head,.subhead{page-break-after:avoid;}
+    table,.grid2,.grid4{page-break-inside:avoid;}
+    .add-row,.row-tools,.del-row,.file-btn{display:none !important;}
+    td input,td textarea,td select,textarea,input,select{border:none;background:transparent;}
+    th,td,.chip,.footer,.note-box{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    input:focus,textarea:focus,select:focus{box-shadow:none;}
+    .cond-off{display:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="brand">
+    <svg class="leaf" viewBox="0 0 24 24" fill="none"><path d="M4 20c0-8 6-14 16-16 0 10-6 16-16 16z" fill="#8fd19e"/><path d="M4 20C8 14 12 11 18 9" stroke="#14532d" stroke-width="1.6" stroke-linecap="round"/></svg>
+    ReFarm · Sales Activity Card
+  </div>
+  <div class="spacer"></div>
+  <span class="savenote" id="saveNote"></span>
+  <button class="btn btn-ghost" onclick="clearForm()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m-9 0v14a2 2 0 002 2h6a2 2 0 002-2V6"/></svg>
+    Clear
+  </button>
+  <button class="btn btn-primary" onclick="window.print()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg>
+    Export / Print PDF
+  </button>
+</div>
+
+<div class="page">
+<form class="doc" id="sacForm" autocomplete="off">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="top">
+      <svg class="header-leaf" viewBox="0 0 24 24" fill="none"><path d="M4 20c0-8 6-14 16-16 0 10-6 16-16 16z" fill="#a7e0b4"/><path d="M4 20C8 14 12 11 18 9" stroke="#0f3d21" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <div><h1>Sales Activity Card</h1><div class="sub">ReFarm Global</div></div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-field"><label>Project Name (full project name)</label><input type="text" data-k="proj_name"></div>
+      <div class="meta-field"><label>Client Name (full name of the client)</label><input type="text" data-k="client_name"></div>
+      <div class="meta-field"><label>Date</label><input type="date" data-k="date"></div>
+      <div class="meta-field"><label>Location (GPS coordinates, county or Emirate)</label><input type="text" data-k="location"></div>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- 1. Basic Information -->
+    <section>
+      <div class="sec-head"><span class="sec-num">1</span><h2 class="sec-title">Basic Information</h2></div>
+      <p class="hint">Essential client, project, and contact information required to identify the sales activity and the key stakeholders involved.</p>
+
+      <div class="grid2">
+        <div><label class="fld">Sales Representative <span class="q">(name)</span></label><input type="text" data-k="sales_rep"></div>
+        <div><label class="fld">Technical Representative <span class="q">(name)</span></label><input type="text" data-k="tech_rep"></div>
+        <div><label class="fld">Point of Contact <span class="q">(name)</span></label><input type="text" data-k="poc"></div>
+        <div><label class="fld">Trial Client Representative <span class="q">(name / designation)</span></label><input type="text" data-k="trial_rep_name"></div>
+        <div><label class="fld">Trial Rep — Email</label><input type="email" data-k="trial_rep_email"></div>
+        <div><label class="fld">Trial Rep — Phone</label><input type="tel" data-k="trial_rep_phone"></div>
+      </div>
+
+      <label class="fld">Status <span class="q">(current sales status vs. overall implementation plan)</span></label>
+      <div class="choices" data-radio="status">
+        <label class="chip"><input type="radio" name="status" value="Planned">Planned</label>
+        <label class="chip"><input type="radio" name="status" value="Ongoing">Ongoing</label>
+        <label class="chip"><input type="radio" name="status" value="Completed">Completed</label>
+        <label class="chip"><input type="radio" name="status" value="On Hold">On Hold</label>
+      </div>
+
+      <label class="fld">Technologies Applied <span class="q">(which ReFarm technologies have been applied)</span></label>
+      <div class="choices">
+        <label class="chip"><input type="checkbox" data-cell class="tech" value="Refood">Refood</label>
+        <label class="chip"><input type="checkbox" data-cell class="tech" value="Resoil">Resoil</label>
+        <label class="chip"><input type="checkbox" data-cell class="tech" value="Replant">Replant</label>
+        <label class="chip"><input type="checkbox" data-cell class="tech" value="ReNox">ReNox</label>
+        <label class="chip"><input type="checkbox" data-cell data-trigger class="tech-other-trig" value="Others">Others</label>
+      </div>
+      <div id="tech-other" class="cond cond-off" style="margin-top:10px;max-width:460px"><input type="text" data-k="tech_other" placeholder="Others — please specify…" disabled></div>
+    </section>
+
+    <!-- 2. Product Quantities -->
+    <section>
+      <div class="sec-head"><span class="sec-num">2</span><h2 class="sec-title">Product Quantities &amp; Specifications</h2></div>
+      <p class="hint">Record the products included in the sales activity, together with their quantities and units of measurement.</p>
+      <table id="tbl-products">
+        <thead><tr><th>Product Name</th><th style="width:24%">Total Quantity</th><th style="width:24%">Unit</th><th class="row-tools"></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button type="button" class="add-row" data-add="products">+ Add product</button>
+    </section>
+
+    <!-- 3. Fulfilment Period -->
+    <section>
+      <div class="sec-head"><span class="sec-num">3</span><h2 class="sec-title">Fulfilment Period</h2></div>
+      <p class="hint">Specify the agreed fulfilment period and indicate whether the delivery is on schedule.</p>
+      <div class="grid2">
+        <div>
+          <label class="fld">Duration</label>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input type="number" data-k="fulfil_value" style="max-width:120px" placeholder="e.g. 2">
+            <div class="choices" data-radio="fulfil_unit" style="margin:0">
+              <label class="chip"><input type="radio" name="fulfil_unit" value="Day">Day</label>
+              <label class="chip"><input type="radio" name="fulfil_unit" value="Week">Week</label>
+              <label class="chip"><input type="radio" name="fulfil_unit" value="Month">Month</label>
+              <label class="chip"><input type="radio" name="fulfil_unit" value="Year">Year</label>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label class="fld">Delivery Status</label>
+          <div class="choices" data-radio="delivery_status">
+            <label class="chip"><input type="radio" name="delivery_status" value="On Time">On Time</label>
+            <label class="chip"><input type="radio" name="delivery_status" value="Delayed">Delayed</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Application Timeline -->
+    <section>
+      <div class="sec-head"><span class="sec-num">4</span><h2 class="sec-title">Application Timeline</h2></div>
+      <p class="hint">Record the planned implementation period for the products or services.</p>
+      <div class="grid2">
+        <div><label class="fld">Start Date</label><input type="date" data-k="app_start"></div>
+        <div><label class="fld">End Date</label><input type="date" data-k="app_end"></div>
+      </div>
+    </section>
+
+    <!-- 5. Client Engagement -->
+    <section>
+      <div class="sec-head"><span class="sec-num">5</span><h2 class="sec-title">Client Engagement</h2></div>
+      <p class="hint">Specify whether the sales opportunity originated through direct client communication or through a tender process.</p>
+      <div class="choices" data-radio="engagement">
+        <label class="chip"><input type="radio" name="engagement" value="Direct">Yes — Direct contact</label>
+        <label class="chip"><input type="radio" name="engagement" value="Tender">No — Through Tender</label>
+      </div>
+      <div id="tender-poc" class="cond cond-off cond-block" style="margin-top:12px;max-width:560px">
+        <label class="mini">If Tender — who is it? / POC of Tender</label>
+        <input type="text" data-k="tender_poc" disabled placeholder="Tender name &amp; point of contact">
+      </div>
+    </section>
+
+    <!-- 6. Commercial Documentation -->
+    <section>
+      <div class="sec-head"><span class="sec-num">6</span><h2 class="sec-title">Commercial Documentation</h2></div>
+      <p class="hint">Record the progress of the commercial documents required to proceed with the sales activity.</p>
+
+      <label class="fld">1. Quotation Sent</label>
+      <div class="choices yn" data-radio="quotation_sent">
+        <label class="chip"><input type="radio" name="quotation_sent" value="Yes">Yes</label>
+        <label class="chip"><input type="radio" name="quotation_sent" value="No">No</label>
+      </div>
+      <div id="quote-attach" class="cond cond-off cond-block" style="margin-top:12px">
+        <label class="mini">Attach Quotation(s)</label>
+        <div class="file-field" data-filewrap>
+          <label class="file-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg> Choose file<input type="file" hidden class="file-input" disabled></label>
+          <input type="text" class="file-name" data-cell disabled placeholder="No file chosen">
+        </div>
+        <label class="mini" style="margin-top:12px">Attach Final Quotation</label>
+        <div class="file-field" data-filewrap>
+          <label class="file-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg> Choose file<input type="file" hidden class="file-input" disabled></label>
+          <input type="text" class="file-name" data-cell disabled placeholder="No file chosen">
+        </div>
+      </div>
+
+      <label class="fld">2. PO Received</label>
+      <div class="choices yn" data-radio="po_received">
+        <label class="chip"><input type="radio" name="po_received" value="Yes">Yes</label>
+        <label class="chip"><input type="radio" name="po_received" value="No">No</label>
+      </div>
+    </section>
+
+    <!-- 7. Payment Details -->
+    <section>
+      <div class="sec-head"><span class="sec-num">7</span><h2 class="sec-title">Payment Details</h2></div>
+      <p class="hint">Record the agreed payment terms and payment method.</p>
+      <div class="grid2">
+        <div>
+          <label class="fld">1. Payment Duration</label>
+          <div class="choices" data-radio="pay_duration">
+            <label class="chip"><input type="radio" name="pay_duration" value="15 Days">15 Days</label>
+            <label class="chip"><input type="radio" name="pay_duration" value="30 Days">30 Days</label>
+            <label class="chip"><input type="radio" name="pay_duration" value="45 Days">45 Days</label>
+          </div>
+        </div>
+        <div>
+          <label class="fld">2. Type of Payment</label>
+          <div class="choices" data-radio="pay_type">
+            <label class="chip"><input type="radio" name="pay_type" value="Bank Transfer">Bank Transfer</label>
+            <label class="chip"><input type="radio" name="pay_type" value="Cheques">Cheques</label>
+            <label class="chip"><input type="radio" name="pay_type" value="Cash">Cash</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Transportation -->
+    <section>
+      <div class="sec-head"><span class="sec-num">8</span><h2 class="sec-title">Transportation</h2></div>
+      <p class="hint">Specify who is responsible for transporting the products to the client.</p>
+      <div class="choices" data-radio="transport">
+        <label class="chip"><input type="radio" name="transport" value="Client">No — By Client</label>
+        <label class="chip"><input type="radio" name="transport" value="ReFarm">Yes — By ReFarm</label>
+      </div>
+    </section>
+
+    <!-- 9. Logistics Details (conditional) -->
+    <section id="logistics" class="cond cond-off">
+      <div class="sec-head"><span class="sec-num">9</span><h2 class="sec-title">Logistics Details</h2></div>
+      <p class="hint">If transportation is arranged by ReFarm, provide the logistics information required for delivery planning.</p>
+      <div class="grid2">
+        <div><label class="fld">How many trips for the client order?</label><input type="text" data-k="log_trips" disabled></div>
+        <div><label class="fld">Size of the truck?</label><input type="text" data-k="log_truck" disabled></div>
+        <div><label class="fld">Estimated time / distance to destination?</label><input type="text" data-k="log_distance" disabled></div>
+        <div></div>
+        <div><label class="fld">Start Point (GPS coordinates)</label><input type="text" data-k="log_start_gps" disabled></div>
+        <div><label class="fld">End Point (GPS coordinates)</label><input type="text" data-k="log_end_gps" disabled></div>
+      </div>
+    </section>
+
+    <!-- 10. Supporting Documents -->
+    <section>
+      <div class="sec-head"><span class="sec-num">10</span><h2 class="sec-title">Supporting Documents</h2></div>
+      <p class="hint">Attach the logistics documentation related to the sales activity.</p>
+      <label class="mini">Attach the Invoice for Logistics</label>
+      <div class="file-field" data-filewrap>
+        <label class="file-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg> Choose file<input type="file" hidden class="file-input"></label>
+        <input type="text" class="file-name" data-cell placeholder="No file chosen">
+      </div>
+    </section>
+
+  </div>
+
+  <div class="footer">ReFarm Global · Sales Activity Card · Confidential</div>
+
+</form>
+</div>
+
+<script>
+/* polyfill for older browsers */
+if(window.NodeList && !NodeList.prototype.forEach){NodeList.prototype.forEach=Array.prototype.forEach;}
+
+/* ---------- dynamic products table ---------- */
+const seeds={
+  products:{cols:[{type:'text',ph:'Product name'},{type:'text',ph:'Qty'},{type:'text',ph:'Unit'}],
+    rows:[['','',''],['','',''],['','',''],['','','']]}
+};
+function cellInput(c){return `<input type="text" data-cell placeholder="${c.ph||''}">`;}
+function buildRow(key){
+  const s=seeds[key];const tr=document.createElement('tr');
+  s.cols.forEach(c=>{const td=document.createElement('td');td.innerHTML=cellInput(c);tr.appendChild(td);});
+  const td=document.createElement('td');td.className='row-tools';
+  td.innerHTML='<button type="button" class="del-row" title="Remove">&times;</button>';
+  td.querySelector('button').onclick=()=>{tr.remove();save();};
+  tr.appendChild(td);return tr;
+}
+function addRow(key){document.querySelector('#tbl-'+key+' tbody').appendChild(buildRow(key));save();}
+Object.keys(seeds).forEach(key=>{const tb=document.querySelector('#tbl-'+key+' tbody');seeds[key].rows.forEach(()=>tb.appendChild(buildRow(key)));});
+document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>addRow(b.dataset.add));
+
+/* ---------- file inputs ---------- */
+document.querySelectorAll('.file-input').forEach(fi=>{
+  fi.addEventListener('change',()=>{
+    const wrap=fi.closest('[data-filewrap]');
+    const name=wrap.querySelector('.file-name');
+    name.value=fi.files&&fi.files[0]?fi.files[0].name:'';
+    save();
+  });
+});
+
+/* ---------- conditional logic ---------- */
+function setCond(el,on){
+  if(!el)return;
+  el.classList.toggle('cond-off',!on);
+  el.querySelectorAll('input,textarea,select').forEach(i=>{if(i.dataset.trigger!==undefined)return;i.disabled=!on;});
+}
+function refreshConditions(){
+  const oth=document.querySelector('.tech-other-trig');
+  setCond(document.getElementById('tech-other'), !!(oth&&oth.checked));
+  const ce=document.querySelector('input[name="engagement"]:checked');
+  setCond(document.getElementById('tender-poc'), !!(ce&&ce.value==='Tender'));
+  const q=document.querySelector('input[name="quotation_sent"]:checked');
+  setCond(document.getElementById('quote-attach'), !!(q&&q.value==='Yes'));
+  const t=document.querySelector('input[name="transport"]:checked');
+  setCond(document.getElementById('logistics'), !!(t&&t.value==='ReFarm'));
+}
+
+/* ---------- chips highlight ---------- */
+function refreshChips(){
+  document.querySelectorAll('.chip').forEach(ch=>{const inp=ch.querySelector('input');ch.classList.toggle('checked',inp.checked);});
+}
+
+/* ---------- autosave ---------- */
+const KEY='refarm_sac_v1';
+function save(){
+  try{
+    const data={fields:{},radios:{},cells:[],rowCount:document.querySelectorAll('#tbl-products tbody tr').length};
+    document.querySelectorAll('[data-k]').forEach(el=>data.fields[el.dataset.k]=el.value);
+    document.querySelectorAll('input[type=radio]:checked').forEach(r=>data.radios[r.name]=r.value);
+    document.querySelectorAll('[data-cell]').forEach(el=>{data.cells.push(el.type==='checkbox'?(el.checked?'1':'0'):el.value);});
+    localStorage.setItem(KEY,JSON.stringify(data));flash('Saved ✓');
+  }catch(e){}
+}
+function flash(t){const n=document.getElementById('saveNote');n.textContent=t;clearTimeout(flash._t);flash._t=setTimeout(()=>n.textContent='',1500);}
+function load(){
+  let raw;try{raw=localStorage.getItem(KEY);}catch(e){return;}
+  if(!raw)return;
+  try{
+    const data=JSON.parse(raw);
+    const want=data.rowCount||0,tb=document.querySelector('#tbl-products tbody');
+    for(let i=tb.children.length;i<want;i++)tb.appendChild(buildRow('products'));
+    const F=data.fields||{};Object.keys(F).forEach(k=>{const el=document.querySelector(`[data-k="${k}"]`);if(el)el.value=F[k];});
+    const R=data.radios||{};Object.keys(R).forEach(n=>{const el=document.querySelector(`input[name="${n}"][value="${R[n]}"]`);if(el)el.checked=true;});
+    const cells=document.querySelectorAll('[data-cell]');
+    (data.cells||[]).forEach((v,i)=>{const el=cells[i];if(!el)return;if(el.type==='checkbox')el.checked=(v==='1');else el.value=v;});
+    refreshChips();refreshConditions();
+  }catch(e){}
+}
+function clearForm(){if(!confirm('Clear all fields? This cannot be undone.'))return;try{localStorage.removeItem(KEY);}catch(e){}location.reload();}
+
+document.addEventListener('input',()=>save());
+document.addEventListener('change',()=>{refreshChips();refreshConditions();save();});
+window.addEventListener('load',()=>{load();refreshChips();refreshConditions();});
+</script>
+</body>
+</html>

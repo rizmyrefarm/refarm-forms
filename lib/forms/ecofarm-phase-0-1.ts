@@ -1,0 +1,203 @@
+import { FormDefinition } from "../types";
+
+export const ecofarmPhase01Form: FormDefinition = {
+  slug: "ecofarm-phase-0-1",
+  title: "EcoFarm Phase 0.1: Initial Assessment & Project Qualification",
+  subtitle: "Phase 0.1 · Initial Assessment (7 Working Days)",
+  category: "assessment",
+  description: "Evaluate site conditions, stakeholder contacts, land status, climate suitability, photo evidence, and ReFarm technology opportunities.",
+  footerText: "ReFarm Global · EcoFarm Phase 0.1 · Confidential & Proprietary",
+  metaFields: [
+    { key: "proj_name", label: "Project", placeholder: "Full project name" },
+    { key: "country", label: "Country", placeholder: "e.g. United Arab Emirates" },
+    { key: "location", label: "Location", placeholder: "Specific city / area" },
+    { key: "gps", label: "GPS Coordinates", placeholder: "e.g. 24.1302° N, 55.8023° E" },
+    { key: "total_area", label: "Total Area (ha)", placeholder: "e.g. 15.5 ha" },
+    { key: "assessor", label: "Assessor", placeholder: "Name and position of assessor" },
+    { key: "assessment_date", label: "Assessment Date", type: "date" },
+    { key: "project_type", label: "Project Type", placeholder: "Commercial / Trial" },
+  ],
+  sections: [
+    {
+      num: "Intro",
+      title: "Phase 0.1 Overview",
+      hint: "Introductory phase summary and qualification roadmap.",
+      fields: [
+        {
+          key: "phase_note",
+          type: "note",
+          staticContent:
+            "Phase 0.1 represents the initial project assessment stage. The objective of this phase is to understand the project background, evaluate the site conditions, identify potential challenges and opportunities, and determine the suitability of ReFarm solutions. This includes an introductory meeting with the client, initial site visit, collection of samples, and preparation of initial technical assessment.",
+        },
+      ],
+    },
+    {
+      num: 1,
+      title: "Stakeholder Information",
+      hint: "Identify main stakeholders, farm owners, client representatives, and ReFarm technical contacts.",
+      fields: [
+        { key: "farm_owner", label: "Farm Owner", type: "text", gridCols: 2, placeholder: "Individual or entity name" },
+        { key: "owner_contact", label: "Owner Email / Phone", type: "text", gridCols: 2, placeholder: "Official contact details" },
+        { key: "owner_rep", label: "Farm Owner Representative", type: "text", gridCols: 2, placeholder: "Assigned representative" },
+        { key: "rep_contact", label: "Representative Email / Phone", type: "text", gridCols: 2, placeholder: "Representative contact" },
+        { key: "supervisor_contact", label: "Supervisor Contact (logistics & site ops)", type: "text", gridCols: 2, placeholder: "Name, email & phone" },
+        { key: "agronomist_contact", label: "ReFarm Agronomist On-site", type: "text", gridCols: 2, placeholder: "Name, email & phone" },
+      ],
+    },
+    {
+      num: 2,
+      title: "Land & Site Evaluation",
+      hint: "Evaluate physical characteristics, legal status, and development potential of the site.",
+      fields: [
+        {
+          key: "land_ownership",
+          label: "Land Ownership Verified (ID, Trade License, legal title review)",
+          type: "text",
+          gridCols: 2,
+          placeholder: "e.g. Verified via Trade License #12345",
+        },
+        {
+          key: "land_use_class",
+          label: "Land Use Classification",
+          type: "text",
+          gridCols: 2,
+          placeholder: "e.g. Agricultural / Commercial",
+        },
+        {
+          key: "permit_status",
+          label: "Agricultural Permit Status",
+          type: "text",
+          gridCols: 2,
+          placeholder: "e.g. Approved / In Progress",
+        },
+        {
+          key: "current_site_status",
+          label: "Current Site Status",
+          hint: "Description of existing condition, activities, and level of development.",
+          type: "textarea",
+        },
+        {
+          key: "topography",
+          label: "Topography",
+          hint: "Overview of land shape, elevation, slopes, and accessibility.",
+          type: "textarea",
+        },
+        {
+          key: "topography_map_file",
+          label: "Upload Google Map / Topography Photo",
+          type: "file",
+        },
+        {
+          key: "expansion_potential",
+          label: "Expansion Potential (Is there space or potential for future expansion?)",
+          type: "single",
+          options: ["Yes", "No"],
+        },
+        {
+          key: "expansion_details",
+          label: "Expansion Details & Opportunities",
+          type: "textarea",
+          placeholder: "Explain available contiguous land, power/water expansion feasibility...",
+          conditional: { when: "expansion_potential", equals: "Yes" },
+        },
+        {
+          key: "site_limitations",
+          label: "Limitations on the Site",
+          hint: "Constraints affecting project development (soil, water, climate, permits).",
+          type: "textarea",
+        },
+      ],
+    },
+    {
+      num: 3,
+      title: "Climate & Crop Suitability",
+      hint: "Evaluate environmental conditions and determine suitable agricultural opportunities.",
+      fields: [
+        { key: "climate_zone", label: "Climate Zone", type: "text", gridCols: 3, placeholder: "e.g. Arid / Hyper-arid" },
+        { key: "temp_range", label: "Temperature Range", type: "text", gridCols: 3, placeholder: "e.g. 18°C – 48°C" },
+        { key: "wind_exposure", label: "Wind Exposure", type: "text", gridCols: 3, placeholder: "e.g. High / Moderate with dust" },
+        { key: "current_crops", label: "Current Crops (and performance status)", type: "textarea", gridCols: 2 },
+        { key: "recommended_crops", label: "Recommended Crops (suitable for location)", type: "textarea", gridCols: 2 },
+        {
+          key: "production_potential",
+          label: "Production Potential",
+          hint: "High-level evaluation of expected agricultural productivity, expected yield, and required conditions.",
+          type: "textarea",
+        },
+      ],
+    },
+    {
+      num: 4,
+      title: "Site Visit Photo Register",
+      hint: "Documents visual evidence collected during site visit to verify conditions and infrastructure.",
+      fields: [
+        {
+          key: "tbl_photo_register",
+          type: "table",
+          tableConfig: {
+            columns: [
+              { key: "category", label: "Location / Category", width: "25%", readOnly: true },
+              { key: "required", label: "Photo Req.", width: "12%", type: "checkbox" },
+              { key: "photo_file", label: "Uploaded File", width: "30%", type: "file" },
+              { key: "comments", label: "Comments / Observation", placeholder: "Condition notes" },
+            ],
+            initialRows: [
+              { category: "Entrance", required: true, comments: "" },
+              { category: "Overview", required: true, comments: "" },
+              { category: "Soil", required: true, comments: "" },
+              { category: "Water Source", required: true, comments: "" },
+              { category: "Infrastructure", required: true, comments: "" },
+              { category: "Irrigation", required: true, comments: "" },
+              { category: "Buildings", required: true, comments: "" },
+              { category: "Other", required: false, comments: "" },
+            ],
+            allowAddRemove: false,
+            seededRows: true,
+          },
+        },
+      ],
+    },
+    {
+      num: 5,
+      title: "ReFarm Technology Opportunity Matrix",
+      hint: "Identify which ReFarm technologies could provide value to the project based on site conditions.",
+      fields: [
+        {
+          key: "tbl_tech_matrix",
+          type: "table",
+          tableConfig: {
+            columns: [
+              { key: "tech", label: "Technology", width: "20%", readOnly: true },
+              {
+                key: "potential",
+                label: "Potential",
+                width: "20%",
+                type: "select",
+                options: ["High", "Medium", "Low", "None"],
+              },
+              {
+                key: "priority",
+                label: "Priority",
+                width: "20%",
+                type: "select",
+                options: ["High", "Medium", "Low"],
+              },
+              { key: "comments", label: "Comments / Expected Value", placeholder: "Specific site application rationale" },
+            ],
+            initialRows: [
+              { tech: "RIOT", potential: "High", priority: "High", comments: "Continuous IoT sensor monitoring" },
+              { tech: "EcoCropX", potential: "High", priority: "High", comments: "Precision crop advisory" },
+              { tech: "BioCareX", potential: "Medium", priority: "Medium", comments: "Biological protection" },
+              { tech: "ReSoil", potential: "High", priority: "High", comments: "Soil organic matter restoration" },
+              { tech: "BioChar", potential: "Medium", priority: "Medium", comments: "Long-term carbon & moisture hold" },
+              { tech: "RePhlo", potential: "High", priority: "High", comments: "Water treatment and recycling" },
+              { tech: "ReCite", potential: "Low", priority: "Low", comments: "Waste stream circularity" },
+            ],
+            allowAddRemove: false,
+            seededRows: true,
+          },
+        },
+      ],
+    },
+  ],
+};
