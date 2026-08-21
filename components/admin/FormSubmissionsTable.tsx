@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { SavedSubmission } from "@/lib/types";
 import { formatDateTime, generateCSV } from "@/lib/utils";
-import { Eye, Edit, Trash2, Download, FileText, Plus } from "lucide-react";
+import { Eye, Edit, Trash2, Download, FileText, Plus, Printer } from "lucide-react";
 
 interface Props {
   formSlug: string;
@@ -151,14 +151,25 @@ export const FormSubmissionsTable: React.FC<Props> = ({
                           href={`/admin/${sub.id}`}
                           className="p-1.5 text-gray-600 hover:text-[#14532d] hover:bg-emerald-50 rounded transition"
                           title="View submission"
+                          aria-label="View submission"
                         >
                           <Eye className="w-3.5 h-3.5" />
+                        </Link>
+
+                        <Link
+                          href={`/admin/${sub.id}/print`}
+                          className="p-1.5 text-gray-600 hover:text-[#14532d] hover:bg-emerald-50 rounded transition"
+                          title="Print submission"
+                          aria-label="Print submission"
+                        >
+                          <Printer className="w-3.5 h-3.5" />
                         </Link>
 
                         <Link
                           href={`/admin/${sub.id}/edit`}
                           className="p-1.5 text-gray-600 hover:text-[#14532d] hover:bg-emerald-50 rounded transition"
                           title="Edit submission"
+                          aria-label="Edit submission"
                         >
                           <Edit className="w-3.5 h-3.5" />
                         </Link>
@@ -168,6 +179,7 @@ export const FormSubmissionsTable: React.FC<Props> = ({
                           onClick={(e) => handleDelete(sub.id, e)}
                           className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition"
                           title="Delete submission"
+                          aria-label="Delete submission"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
