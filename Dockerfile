@@ -1,6 +1,7 @@
 # Stage 1: Dependencies
 FROM node:20-alpine AS deps
 WORKDIR /app
+RUN apk add --no-cache openssl libc6-compat
 RUN npm install -g pnpm
 COPY package.json pnpm-lock.yaml* ./
 COPY prisma ./prisma/
@@ -9,6 +10,7 @@ RUN pnpm install
 # Stage 2: Builder
 FROM node:20-alpine AS builder
 WORKDIR /app
+RUN apk add --no-cache openssl libc6-compat
 RUN npm install -g pnpm
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -21,6 +23,9 @@ RUN pnpm build
 # Stage 3: Runner
 FROM node:20-alpine AS runner
 WORKDIR /app
+
+# Install openssl and libc compatibility libraries for Prisma engine
+RUN apk add --no-cache openssl libc6-compat
 
 ENV NODE_ENV=production
 ENV PORT=3000
