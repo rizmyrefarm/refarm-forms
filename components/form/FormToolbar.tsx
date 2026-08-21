@@ -2,15 +2,12 @@
 
 import React from "react";
 import Link from "next/link";
-import { Printer, RotateCcw, Check, Save, ArrowLeft } from "lucide-react";
+import { RotateCcw, ArrowLeft } from "lucide-react";
 
 interface FormToolbarProps {
   title: string;
   saveStatus?: string;
   onClear?: () => void;
-  onSubmit?: () => void;
-  isSubmitting?: boolean;
-  submitButtonText?: string;
   showBack?: boolean;
   backHref?: string;
   backLabel?: string;
@@ -20,9 +17,6 @@ export const FormToolbar: React.FC<FormToolbarProps> = ({
   title,
   saveStatus,
   onClear,
-  onSubmit,
-  isSubmitting = false,
-  submitButtonText = "Submit / Save to system",
   showBack = true,
   backHref = "/",
   backLabel = "Hub",
@@ -65,37 +59,6 @@ export const FormToolbar: React.FC<FormToolbarProps> = ({
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>Clear</span>
-        </button>
-      )}
-
-      <button
-        type="button"
-        onClick={() => window.print()}
-        className="inline-flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-3 py-1.5 rounded-md transition"
-      >
-        <Printer className="w-3.5 h-3.5" />
-        <span className="hidden sm:inline">Export / Print PDF</span>
-        <span className="sm:hidden">Print</span>
-      </button>
-
-      {onSubmit && (
-        <button
-          type="button"
-          onClick={onSubmit}
-          disabled={isSubmitting}
-          className="inline-flex items-center gap-1.5 bg-[#2f9e44] hover:bg-[#268a3a] text-white text-xs font-semibold px-3.5 py-1.5 rounded-md transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isSubmitting ? (
-            <>
-              <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              <span>Saving...</span>
-            </>
-          ) : (
-            <>
-              <Save className="w-3.5 h-3.5" />
-              <span>{submitButtonText}</span>
-            </>
-          )}
         </button>
       )}
     </div>

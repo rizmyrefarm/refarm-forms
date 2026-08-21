@@ -7,7 +7,7 @@ import { isConditionMet, cn } from "@/lib/utils";
 import { FormHeader } from "./form/FormHeader";
 import { FormToolbar } from "./form/FormToolbar";
 import { FieldRenderer } from "./form/FieldRenderer";
-import { CheckCircle2, ArrowRight, ExternalLink, RefreshCw } from "lucide-react";
+import { CheckCircle2, ArrowRight, Save, Printer } from "lucide-react";
 import Link from "next/link";
 
 interface FormRendererProps {
@@ -199,9 +199,6 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
         title={formDef.title}
         saveStatus={saveStatus}
         onClear={!isEditMode ? handleClear : undefined}
-        onSubmit={handleSubmit}
-        isSubmitting={isSubmitting}
-        submitButtonText={isEditMode ? "Update Submission" : "Submit / Save to system"}
         showBack={true}
         backHref={isEditMode ? `/admin/${submissionId}` : "/"}
         backLabel={isEditMode ? "View" : "Hub"}
@@ -306,6 +303,43 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
                 </section>
               );
             })}
+
+            {/* Bottom Action Bar */}
+            <div className="mt-10 pt-6 border-t border-[#d3ded7] no-print">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+                {/* Submit Button (~65% width on desktop) */}
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  aria-label={isEditMode ? "Update Submission" : "Submit form"}
+                  className="flex-[2] sm:min-w-0 h-14 sm:h-[58px] bg-[#2f9e44] hover:bg-[#268a3a] active:bg-[#1b6b3a] text-white font-bold text-base sm:text-lg rounded-xl shadow-sm transition duration-150 flex items-center justify-center gap-2.5 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#2f9e44] focus:ring-offset-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-5 h-5" />
+                      <span>{isEditMode ? "Update Submission" : "Submit"}</span>
+                    </>
+                  )}
+                </button>
+
+                {/* Export / Print PDF Button (~35% width on desktop) */}
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  aria-label="Export or Print PDF"
+                  className="flex-[1] sm:min-w-0 h-14 sm:h-[58px] bg-white hover:bg-[#e6f4ea] active:bg-[#d3ded7] text-[#14532d] border-2 border-[#14532d] font-bold text-base sm:text-lg rounded-xl transition duration-150 flex items-center justify-center gap-2.5 focus:outline-none focus:ring-2 focus:ring-[#14532d] focus:ring-offset-2"
+                >
+                  <Printer className="w-5 h-5 text-[#14532d]" />
+                  <span>Export / Print PDF</span>
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Footer */}
