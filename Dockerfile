@@ -12,6 +12,7 @@ WORKDIR /app
 RUN npm install -g pnpm
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN mkdir -p public
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npx prisma generate
@@ -26,8 +27,8 @@ ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 ENV UPLOAD_DIR=/app/uploads
 
-# Create uploads and app directory
-RUN mkdir -p /app/uploads && chown -R node:node /app
+# Create uploads and public directory with proper permissions
+RUN mkdir -p /app/uploads /app/public && chown -R node:node /app
 
 # Copy built artifacts
 COPY --from=builder --chown=node:node /app/public ./public
