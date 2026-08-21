@@ -7,7 +7,7 @@ import { isConditionMet, cn } from "@/lib/utils";
 import { FormHeader } from "./form/FormHeader";
 import { FormToolbar } from "./form/FormToolbar";
 import { FieldRenderer } from "./form/FieldRenderer";
-import { CheckCircle2, ArrowRight, Save, Printer } from "lucide-react";
+import { CheckCircle2, ArrowRight, Save, Printer, History, Trash2, Check } from "lucide-react";
 import Link from "next/link";
 
 interface FormRendererProps {
@@ -17,6 +17,49 @@ interface FormRendererProps {
   isEditMode?: boolean;
 }
 
+interface StoredDraft {
+  data: SubmissionData;
+  updatedAt: string;
+  version: number;
+}
+
+function getRelativeTimeString(dateStr: string): string {
+  try {
+    const d = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - d.getTime();
+    if (diffMs < 0 || isNaN(diffMs)) return "just now";
+    const diffSec = Math.floor(diffMs / 1000);
+    if (diffSec < 60) return "just now";
+    const diffMin = Math.floor(diffSec / 60);
+    if (diffMin < 60) return `${diffMin} ${diffMin === 1 ? "minute" : "minutes"} ago`;
+    const diffHr = Math.floor(diffMin / 60);
+    if (diffHr < 24) return `${diffHr} ${diffHr === 1 ? "hour" : "hours"} ago`;
+    const diffDays = Math.floor(diffHr / 24);
+    return `${diffDays} ${diffDays === 1 ? "day" : "days"} ago`;
+  } catch {
+    return "recently";
+  }
+}
+
+function isDraftDataNonEmpty(data: SubmissionData): boolean {
+  if (!data) return false;
+  const hasMeta = Object.values(data.meta || {}).some(
+    (v) => v !== "" && v !== null && v !== undefined
+  );
+  const hasFields = Object.values(data.fields || {}).some((v) => {
+    if (Array.isArray(v)) return v.length > 0;
+    if (typeof v === "object" && v !== null) return Object.keys(v).length > 0;
+    return v !== "" && v !== null && v !== undefined;
+  });
+  const hasTables = Object.values(data.tables || {}).some((rows) =>
+    rows.some((row) =>
+      Object.entries(row).some(([k, v]) => v !== "" && v !== null && v !== undefined && k !== "idx")
+    )
+  );
+  return hasMeta || hasFields || hasTables;
+}
+
 export const FormRenderer: React.FC<FormRendererProps> = ({
   formDef,
   initialData,
@@ -24,12 +67,13 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
   isEditMode = false,
 }) => {
   const router = useRouter();
-  const storageKey = `refarm_draft_${formDef.slug}`;
+  // Standardized draft key format: refarm:draft:<slug>
+  const draftKey = `refarm:draft:${formDef.slug}`;
 
   const [formData, setFormData] = useState<SubmissionData>(() => {
     if (initialData) return initialData;
 
-    // Seed defaults
+    // Seed initial defaults
     const initialMeta: Record<string, any> = {};
     formDef.metaFields?.forEach((f) => {
       if (f.defaultValue) initialMeta[f.key] = f.defaultValue;
@@ -54,54 +98,93 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
     };
   });
 
+  const [availableDraft, setAvailableDraft] = useState<StoredDraft | null>(null);
   const [saveStatus, setSaveStatus] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedId, setSubmittedId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load from localStorage if not edit mode
+  const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const statusTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const isMountedRef = useRef(false);
+
+  // Check for unsaved draft on mount (blank forms only)
   useEffect(() => {
     if (isEditMode || initialData) return;
+
     try {
-      const saved = localStorage.getItem(storageKey);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed && typeof parsed === "object") {
-          setFormData((prev) => ({
-            meta: { ...prev.meta, ...(parsed.meta || {}) },
-            fields: { ...prev.fields, ...(parsed.fields || {}) },
-            tables: { ...prev.tables, ...(parsed.tables || {}) },
-          }));
+      const raw = localStorage.getItem(draftKey);
+      if (raw) {
+        const parsed: StoredDraft = JSON.parse(raw);
+        if (parsed && parsed.data && isDraftDataNonEmpty(parsed.data)) {
+          setAvailableDraft(parsed);
         }
       }
     } catch (e) {
-      console.error("Failed to load local draft", e);
+      console.warn("Could not read local draft:", e);
     }
-  }, [storageKey, isEditMode, initialData]);
+  }, [draftKey, isEditMode, initialData]);
 
-  // Flash save note
-  const triggerAutosave = useCallback(
-    (newData: SubmissionData) => {
+  // Debounced auto-save on form change (~500ms)
+  const scheduleAutosave = useCallback(
+    (nextData: SubmissionData) => {
       if (isEditMode) return;
-      try {
-        localStorage.setItem(storageKey, JSON.stringify(newData));
-        setSaveStatus("Saved ✓");
-        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-        saveTimeoutRef.current = setTimeout(() => {
-          setSaveStatus("");
-        }, 1500);
-      } catch (e) {
-        console.error("Draft save failed", e);
-      }
+
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+
+      saveTimerRef.current = setTimeout(() => {
+        try {
+          if (isDraftDataNonEmpty(nextData)) {
+            const draftPayload: StoredDraft = {
+              data: nextData,
+              updatedAt: new Date().toISOString(),
+              version: 1,
+            };
+            localStorage.setItem(draftKey, JSON.stringify(draftPayload));
+            setSaveStatus("Saved ✓");
+
+            if (statusTimerRef.current) clearTimeout(statusTimerRef.current);
+            statusTimerRef.current = setTimeout(() => {
+              setSaveStatus("");
+            }, 1500);
+          }
+        } catch (err) {
+          // Fail silently on storage quota / private mode errors
+          console.warn("Local draft auto-save failed:", err);
+        }
+      }, 500);
     },
-    [storageKey, isEditMode]
+    [draftKey, isEditMode]
   );
+
+  // Clean up timers on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      if (statusTimerRef.current) clearTimeout(statusTimerRef.current);
+    };
+  }, []);
+
+  const handleRestoreDraft = () => {
+    if (!availableDraft) return;
+    setFormData(availableDraft.data);
+    setAvailableDraft(null);
+    setSaveStatus("Draft restored ✓");
+    if (statusTimerRef.current) clearTimeout(statusTimerRef.current);
+    statusTimerRef.current = setTimeout(() => setSaveStatus(""), 2000);
+  };
+
+  const handleDiscardDraft = () => {
+    try {
+      localStorage.removeItem(draftKey);
+    } catch (e) {}
+    setAvailableDraft(null);
+  };
 
   const handleMetaChange = (key: string, val: any) => {
     setFormData((prev) => {
       const next = { ...prev, meta: { ...prev.meta, [key]: val } };
-      triggerAutosave(next);
+      scheduleAutosave(next);
       return next;
     });
   };
@@ -109,7 +192,7 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
   const handleFieldChange = (key: string, val: any) => {
     setFormData((prev) => {
       const next = { ...prev, fields: { ...prev.fields, [key]: val } };
-      triggerAutosave(next);
+      scheduleAutosave(next);
       return next;
     });
   };
@@ -117,7 +200,7 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
   const handleTableChange = (key: string, rows: Record<string, any>[]) => {
     setFormData((prev) => {
       const next = { ...prev, tables: { ...prev.tables, [key]: rows } };
-      triggerAutosave(next);
+      scheduleAutosave(next);
       return next;
     });
   };
@@ -125,7 +208,7 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
   const handleClear = () => {
     if (!window.confirm("Clear all fields? This cannot be undone.")) return;
     try {
-      localStorage.removeItem(storageKey);
+      localStorage.removeItem(draftKey);
     } catch (e) {}
     window.location.reload();
   };
@@ -177,16 +260,21 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
       }
 
       const result = await res.json();
+
+      // Clear draft key ONLY on successful submission
       if (!isEditMode) {
         try {
-          localStorage.removeItem(storageKey);
+          localStorage.removeItem(draftKey);
         } catch (e) {}
       }
 
       setSubmittedId(result.id || submissionId);
     } catch (err: any) {
-      console.error(err);
-      setErrorMessage(err.message || "An unexpected error occurred during submission.");
+      console.error("Submission error:", err);
+      // Data remains intact in localStorage for recovery
+      setErrorMessage(
+        err.message || "An unexpected error occurred during submission. Your draft is safely saved."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -203,6 +291,48 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
         backHref={isEditMode ? `/admin/${submissionId}` : "/"}
         backLabel={isEditMode ? "View" : "Hub"}
       />
+
+      {/* Restore Unsaved Draft Banner (non-blocking, accessible) */}
+      {availableDraft && (
+        <div
+          role="region"
+          aria-live="polite"
+          className="max-w-[980px] mx-auto px-4 sm:px-6 pt-4 no-print animate-fade-in"
+        >
+          <div className="bg-[#fff8e6] border border-[#e6c766] border-l-4 border-l-[#d4a017] rounded-xl p-3.5 sm:p-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-[#6b5100]">
+            <div className="flex items-center gap-2.5">
+              <History className="w-4 h-4 text-[#d4a017] flex-shrink-0" />
+              <div>
+                <span className="font-bold text-[#7a5c00]">
+                  Restore your unsaved draft?
+                </span>{" "}
+                <span className="text-amber-800/90">
+                  (saved {getRelativeTimeString(availableDraft.updatedAt)})
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+              <button
+                type="button"
+                onClick={handleRestoreDraft}
+                className="inline-flex items-center gap-1 bg-[#14532d] hover:bg-[#0f3d21] text-white px-3 py-1.5 rounded-lg font-semibold transition focus:outline-none focus:ring-2 focus:ring-[#2f9e44]"
+              >
+                <Check className="w-3.5 h-3.5" />
+                <span>Restore</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleDiscardDraft}
+                className="inline-flex items-center gap-1 bg-white hover:bg-amber-100 text-[#7a5c00] border border-[#e6c766] px-3 py-1.5 rounded-lg font-semibold transition focus:outline-none focus:ring-2 focus:ring-amber-500"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Discard</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Submission Success Modal / Banner */}
       {submittedId && (
@@ -245,7 +375,7 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
       {errorMessage && (
         <div className="max-w-[980px] mx-auto px-4 mt-4 no-print">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-xs">
-            <b>Error:</b> {errorMessage}
+            <b>Notice:</b> {errorMessage}
           </div>
         </div>
       )}
