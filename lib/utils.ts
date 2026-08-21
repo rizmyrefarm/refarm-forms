@@ -30,6 +30,12 @@ export function formatDateTime(date: string | Date | null | undefined): string {
   });
 }
 
+export function isImageFile(filenameOrUrl?: string | null): boolean {
+  if (!filenameOrUrl) return false;
+  const clean = filenameOrUrl.split("?")[0].toLowerCase();
+  return /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(clean);
+}
+
 export function isConditionMet(
   conditional: ConditionalRule | undefined,
   formData: {

@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
 import { FormDefinition, SavedSubmission, FormField } from "@/lib/types";
-import { formatDateTime } from "@/lib/utils";
+import { formatDateTime, isImageFile } from "@/lib/utils";
 import { ArrowLeft, Printer } from "lucide-react";
 
 interface Props {
@@ -22,6 +22,53 @@ export const CleanPrintDocument: React.FC<Props> = ({ submission, formDef }) => 
     return () => clearTimeout(timer);
   }, []);
 
+  const renderSingleFile = (fileObj: any) => {
+    if (!fileObj) return "—";
+
+    const name = typeof fileObj === "object" && fileObj.name ? fileObj.name : String(fileObj).split("/").pop() || String(fileObj);
+    const url = typeof fileObj === "object" && fileObj.url ? fileObj.url : String(fileObj);
+    const isImg = isImageFile(name || url);
+
+    if (isImg && url) {
+      return (
+        <div className="my-2 break-inside-avoid print:break-inside-avoid">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={url}
+            alt={name}
+            style={{
+              maxWidth: "420px",
+              width: "auto",
+              maxHeight: "280px",
+              objectFit: "contain",
+              borderRadius: "4px",
+              border: "1px solid #000",
+              WebkitPrintColorAdjust: "exact",
+              printColorAdjust: "exact",
+            }}
+            onError={(e) => {
+              // Graceful fallback to text if image cannot be loaded
+              (e.target as HTMLElement).style.display = "none";
+            }}
+          />
+          <div className="text-[10px] text-gray-700 italic mt-1 font-mono">
+            {name}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="text-xs text-gray-900">
+        <span className="font-semibold">Attached File: </span>
+        <span>{name}</span>
+        {url && url.startsWith("http") && (
+          <span className="text-[10.5px] text-gray-600 block font-mono mt-0.5">{url}</span>
+        )}
+      </div>
+    );
+  };
+
   const renderFieldValue = (field: FormField) => {
     const val = formData.fields?.[field.key];
 
@@ -33,13 +80,17 @@ export const CleanPrintDocument: React.FC<Props> = ({ submission, formDef }) => 
     }
 
     if (field.type === "file") {
-      if (val && typeof val === "object" && val.name) {
-        return val.name;
+      if (Array.isArray(val)) {
+        if (val.length === 0) return "—";
+        return (
+          <div className="space-y-2">
+            {val.map((f, i) => (
+              <div key={i}>{renderSingleFile(f)}</div>
+            ))}
+          </div>
+        );
       }
-      if (typeof val === "string" && val) {
-        return val.split("/").pop() || val;
-      }
-      return "—";
+      return renderSingleFile(val);
     }
 
     if (field.type === "table" && field.tableConfig) {
@@ -48,7 +99,7 @@ export const CleanPrintDocument: React.FC<Props> = ({ submission, formDef }) => 
 
       return (
         <div className="my-2 overflow-x-auto">
-          <table className="w-full border-collapse border border-black text-[11.5px]">
+          <table className="w-full border-collapse border border-black text-[11px]">
             <thead>
               <tr className="bg-gray-100 border-b border-black">
                 {field.tableConfig.columns.map((col) => (
@@ -64,25 +115,65 @@ export const CleanPrintDocument: React.FC<Props> = ({ submission, formDef }) => 
             </thead>
             <tbody>
               {rows.map((row, rIdx) => (
-                <tr key={rIdx} className="border-b border-black">
+                <tr key={rIdx} className="border-b border-black break-inside-avoid">
                   {field.tableConfig?.columns.map((col) => {
                     const cellVal = row[col.key];
-                    let displayVal = "—";
+
                     if (col.type === "checkbox") {
-                      displayVal = cellVal ? "[✓] Yes" : "[ ] No";
-                    } else if (col.type === "file") {
-                      if (cellVal && typeof cellVal === "object" && cellVal.name) {
-                        displayVal = cellVal.name;
-                      } else if (typeof cellVal === "string" && cellVal) {
-                        displayVal = cellVal.split("/").pop() || cellVal;
+                      return (
+                        <td key={col.key} className="border border-black px-2 py-1.5 align-top text-black">
+                          {cellVal ? "[✓] Yes" : "[ ] No"}
+                        </td>
+                      );
+                    }
+
+                    if (col.type === "file") {
+                      if (!cellVal) {
+                        return (
+                          <td key={col.key} className="border border-black px-2 py-1.5 align-top text-gray-500 italic">
+                            —
+                          </td>
+                        );
                       }
-                    } else if (cellVal !== undefined && cellVal !== null && cellVal !== "") {
-                      displayVal = String(cellVal);
+
+                      const name = typeof cellVal === "object" && cellVal.name ? cellVal.name : String(cellVal).split("/").pop() || String(cellVal);
+                      const url = typeof cellVal === "object" && cellVal.url ? cellVal.url : String(cellVal);
+                      const isImg = isImageFile(name || url);
+
+                      return (
+                        <td key={col.key} className="border border-black px-2 py-1.5 align-top text-black">
+                          {isImg && url ? (
+                            <div className="my-1">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={url}
+                                alt={name}
+                                style={{
+                                  maxWidth: "180px",
+                                  width: "auto",
+                                  maxHeight: "120px",
+                                  objectFit: "contain",
+                                  borderRadius: "2px",
+                                  border: "1px solid #000",
+                                  WebkitPrintColorAdjust: "exact",
+                                  printColorAdjust: "exact",
+                                }}
+                                onError={(e) => {
+                                  (e.target as HTMLElement).style.display = "none";
+                                }}
+                              />
+                              <div className="text-[9.5px] text-gray-700 italic mt-0.5 truncate max-w-[180px]">{name}</div>
+                            </div>
+                          ) : (
+                            <span className="text-xs">{name}</span>
+                          )}
+                        </td>
+                      );
                     }
 
                     return (
                       <td key={col.key} className="border border-black px-2 py-1.5 align-top text-black">
-                        {displayVal}
+                        {cellVal !== undefined && cellVal !== null && cellVal !== "" ? String(cellVal) : "—"}
                       </td>
                     );
                   })}
@@ -98,7 +189,7 @@ export const CleanPrintDocument: React.FC<Props> = ({ submission, formDef }) => 
       return (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-2">
           {field.signCards.map((card, cIdx) => (
-            <div key={cIdx} className="border border-black p-3 rounded">
+            <div key={cIdx} className="border border-black p-3 rounded break-inside-avoid">
               <div className="font-bold border-b border-black pb-1 mb-2 uppercase text-xs">
                 {card.title}
               </div>
@@ -151,7 +242,7 @@ export const CleanPrintDocument: React.FC<Props> = ({ submission, formDef }) => 
         </button>
       </div>
 
-      {/* Printable Document (Plain Black & White, No graphics) */}
+      {/* Printable Document (Plain Black & White, Inline Embedded Images) */}
       <article className="max-w-4xl mx-auto text-black">
         {/* Document Header */}
         <header className="mb-6">
@@ -263,6 +354,12 @@ export const CleanPrintDocument: React.FC<Props> = ({ submission, formDef }) => 
           }
           .page-section {
             page-break-inside: avoid;
+          }
+          img {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
           }
         }
       `}</style>
