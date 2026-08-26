@@ -60,7 +60,7 @@ export const SubmissionView: React.FC<SubmissionViewProps> = ({
             <img
               src="/refarm-logo.png"
               alt="ReFarm Global"
-              className="h-4.5 sm:h-5 w-auto object-contain"
+              className="h-5 w-auto object-contain max-w-[100px]"
             />
           </div>
           <span className="hidden sm:inline text-emerald-100 font-semibold text-xs">· {formDef.title}</span>

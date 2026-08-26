@@ -28,7 +28,7 @@ export const FormHeader: React.FC<FormHeaderProps> = ({
           <img
             src="/refarm-logo.png"
             alt="ReFarm Global"
-            className="h-6 sm:h-7 w-auto object-contain"
+            className="h-6 sm:h-7 w-auto object-contain max-w-[120px]"
           />
         </div>
         <div>

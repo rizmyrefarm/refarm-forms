@@ -39,7 +39,7 @@ export const FormToolbar: React.FC<FormToolbarProps> = ({
             <img
               src="/refarm-logo.png"
               alt="ReFarm Global"
-              className="h-4.5 sm:h-5 w-auto object-contain"
+              className="h-5 w-auto object-contain max-w-[100px]"
             />
           </div>
           <span className="hidden sm:inline text-emerald-100 font-semibold text-xs">· {title}</span>
