@@ -16,18 +16,17 @@ export const Navbar: React.FC = () => {
           {/* Brand */}
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2.5 group">
-              <svg className="w-7 h-7 flex-shrink-0" viewBox="0 0 24 24" fill="none">
-                <path d="M4 20c0-8 6-14 16-16 0 10-6 16-16 16z" fill="#8fd19e" />
-                <path d="M4 20C8 14 12 11 18 9" stroke="#14532d" strokeWidth="1.6" strokeLinecap="round" />
-              </svg>
-              <div>
-                <span className="font-bold tracking-tight text-base sm:text-lg group-hover:text-emerald-200 transition">
-                  ReFarm Forms
-                </span>
-                <span className="hidden sm:inline-block ml-2 text-[10px] uppercase tracking-wider bg-emerald-950/60 text-emerald-300 font-semibold px-2 py-0.5 rounded border border-emerald-700/40">
-                  Internal
-                </span>
+              <div className="bg-white px-2 py-1 rounded-md shadow-sm inline-flex items-center flex-shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/refarm-logo.png"
+                  alt="ReFarm Global"
+                  className="h-5 sm:h-6 w-auto object-contain"
+                />
               </div>
+              <span className="hidden sm:inline-block ml-2 text-[10px] uppercase tracking-wider bg-emerald-950/60 text-emerald-300 font-semibold px-2 py-0.5 rounded border border-emerald-700/40">
+                Forms Platform
+              </span>
             </Link>
           </div>
 

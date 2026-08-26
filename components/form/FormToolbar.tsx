@@ -34,12 +34,15 @@ export const FormToolbar: React.FC<FormToolbarProps> = ({
           </Link>
         )}
         <div className="flex items-center gap-2 font-bold tracking-tight text-sm">
-          <svg className="w-6 h-6 flex-shrink-0" viewBox="0 0 24 24" fill="none">
-            <path d="M4 20c0-8 6-14 16-16 0 10-6 16-16 16z" fill="#8fd19e" />
-            <path d="M4 20C8 14 12 11 18 9" stroke="#14532d" strokeWidth="1.6" strokeLinecap="round" />
-          </svg>
-          <span className="hidden sm:inline">ReFarm · {title}</span>
-          <span className="sm:hidden">ReFarm</span>
+          <div className="bg-white px-2 py-0.5 rounded shadow-sm inline-flex items-center flex-shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/refarm-logo.png"
+              alt="ReFarm Global"
+              className="h-4.5 sm:h-5 w-auto object-contain"
+            />
+          </div>
+          <span className="hidden sm:inline text-emerald-100 font-semibold text-xs">· {title}</span>
         </div>
       </div>
 

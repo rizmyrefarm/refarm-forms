@@ -39,26 +39,15 @@ export default async function AdminHomePage() {
               <span>Home</span>
             </Link>
             <span className="text-gray-300">|</span>
-            <div className="flex items-center gap-2">
-              <svg
-                className="w-5 h-5 flex-shrink-0"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  d="M4 20c0-8 6-14 16-16 0 10-6 16-16 16z"
-                  fill="#2f9e44"
-                />
-                <path
-                  d="M4 20C8 14 12 11 18 9"
-                  stroke="#14532d"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                />
-              </svg>
-              <h1 className="font-bold text-base sm:text-lg tracking-tight text-[#14532d]">
+            <div className="flex items-center gap-2.5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/refarm-logo.png"
+                alt="ReFarm Global"
+                className="h-7 w-auto object-contain"
+              />
+              <span className="text-gray-300">|</span>
+              <h1 className="font-bold text-sm sm:text-base tracking-tight text-[#14532d]">
                 Admin Dashboard
               </h1>
             </div>

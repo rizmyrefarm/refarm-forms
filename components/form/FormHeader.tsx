@@ -23,23 +23,14 @@ export const FormHeader: React.FC<FormHeaderProps> = ({
   return (
     <div className="doc-header">
       <div className="flex items-center gap-3.5 mb-5">
-        <svg
-          className="w-10 h-10 flex-shrink-0"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M4 20c0-8 6-14 16-16 0 10-6 16-16 16z"
-            fill="#a7e0b4"
+        <div className="bg-white px-2.5 py-1.5 rounded-lg shadow-sm inline-flex items-center flex-shrink-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/refarm-logo.png"
+            alt="ReFarm Global"
+            className="h-6 sm:h-7 w-auto object-contain"
           />
-          <path
-            d="M4 20C8 14 12 11 18 9"
-            stroke="#0f3d21"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-          />
-        </svg>
+        </div>
         <div>
           <h1 className="text-xl md:text-2xl font-bold tracking-wide m-0 text-white">
             {title}
