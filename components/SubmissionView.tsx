@@ -108,11 +108,17 @@ export const SubmissionView: React.FC<SubmissionViewProps> = ({
             <span className="text-gray-300">•</span>
             <span className="text-gray-500 font-mono text-[11px]">ID: {submission.id}</span>
           </div>
-          <div className="flex items-center gap-4 text-[11px]">
-            <span>Submitted: <b>{formatDateTime(submission.createdAt)}</b></span>
-            {submission.updatedAt && submission.updatedAt !== submission.createdAt && (
-              <span>Updated: <b>{formatDateTime(submission.updatedAt)}</b></span>
-            )}
+          <div className="flex flex-wrap items-center gap-3 text-[11.5px]">
+            <span>
+              Submitted: <b>{formatDateTime(submission.createdAt)}</b>
+            </span>
+            {submission.updatedAt &&
+              new Date(submission.updatedAt).getTime() - new Date(submission.createdAt).getTime() > 1000 && (
+                <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-900 border border-amber-200 px-2 py-0.5 rounded font-medium">
+                  <span>Last Edited:</span>
+                  <b>{formatDateTime(submission.updatedAt)}</b>
+                </span>
+              )}
           </div>
         </div>
       </div>
@@ -168,6 +174,31 @@ export const SubmissionView: React.FC<SubmissionViewProps> = ({
                 </section>
               );
             })}
+
+            {/* Bottom Action Bar */}
+            <div className="mt-10 pt-6 border-t border-[#d3ded7] no-print">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+                {/* Edit Submission Button (~65% width on desktop) */}
+                <Link
+                  href={`/admin/${submission.id}/edit`}
+                  className="flex-[2] sm:min-w-0 h-14 sm:h-[58px] bg-[#2f9e44] hover:bg-[#268a3a] active:bg-[#1b6b3a] text-white font-bold text-base sm:text-lg rounded-xl shadow-sm transition duration-150 flex items-center justify-center gap-2.5 focus:outline-none focus:ring-2 focus:ring-[#2f9e44] focus:ring-offset-2"
+                >
+                  <Edit className="w-5 h-5" />
+                  <span>Edit Submission</span>
+                </Link>
+
+                {/* Export / Print PDF Button (~35% width on desktop) */}
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  aria-label="Export or Print PDF"
+                  className="flex-[1] sm:min-w-0 h-14 sm:h-[58px] bg-white hover:bg-[#e6f4ea] active:bg-[#d3ded7] text-[#14532d] border-2 border-[#14532d] font-bold text-base sm:text-lg rounded-xl transition duration-150 flex items-center justify-center gap-2.5 focus:outline-none focus:ring-2 focus:ring-[#14532d] focus:ring-offset-2"
+                >
+                  <Printer className="w-5 h-5 text-[#14532d]" />
+                  <span>Export / Print PDF</span>
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Footer */}

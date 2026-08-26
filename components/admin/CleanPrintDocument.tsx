@@ -265,6 +265,15 @@ export const CleanPrintDocument: React.FC<Props> = ({ submission, formDef }) => 
             <span>
               <b>Submitted:</b> {formatDateTime(submission.createdAt)}
             </span>
+            {submission.updatedAt &&
+              new Date(submission.updatedAt).getTime() - new Date(submission.createdAt).getTime() > 1000 && (
+                <>
+                  <span>·</span>
+                  <span>
+                    <b>Last Edited:</b> {formatDateTime(submission.updatedAt)}
+                  </span>
+                </>
+              )}
             <span>·</span>
             <span>
               <b>Record ID:</b> {submission.id}
