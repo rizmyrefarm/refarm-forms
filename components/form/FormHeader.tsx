@@ -22,7 +22,7 @@ export const FormHeader: React.FC<FormHeaderProps> = ({
 }) => {
   return (
     <div className="doc-header">
-      <div className="flex items-center gap-3.5 mb-5">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3.5 mb-5">
         <div className="bg-white px-2.5 py-1.5 rounded-lg shadow-sm inline-flex items-center flex-shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img

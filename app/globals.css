@@ -320,6 +320,62 @@ body {
   color: #8a988f !important;
 }
 
+/* ─── Mobile Responsive ─── */
+@media (max-width: 640px) {
+  .page-container {
+    margin: 12px auto 40px;
+    padding: 0 8px;
+  }
+
+  .doc-header {
+    padding: 18px 16px 16px;
+  }
+
+  .doc-body {
+    padding: 10px 14px 20px;
+  }
+
+  .sec-head {
+    gap: 8px;
+  }
+
+  .sec-title {
+    font-size: 14.5px;
+  }
+
+  .choices {
+    gap: 8px;
+  }
+
+  .chip {
+    padding: 8px 12px;
+    font-size: 12.5px;
+  }
+
+  .sign-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .sign-card {
+    padding: 12px;
+  }
+
+  .note-box {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .refarm-table th {
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+
+  .refarm-table td {
+    padding: 3px;
+  }
+}
+
 /* Print CSS */
 @media print {
   body {
@@ -397,5 +453,18 @@ body {
 
   .cond-off {
     display: none !important;
+  }
+}
+
+/* Prevent zoom on input focus (iOS Safari) */
+@media (max-width: 640px) {
+  input[type="text"],
+  input[type="date"],
+  input[type="number"],
+  input[type="email"],
+  input[type="tel"],
+  textarea,
+  select {
+    font-size: 16px !important;
   }
 }
