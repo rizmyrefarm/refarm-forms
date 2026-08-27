@@ -69,7 +69,7 @@ export const FORM_RESPONSIBLE_MAP: Record<string, string> = {
   "ecofarm-phase-0-3": "ReFarm team (BD, Sales)",
   "ipic": "Client",
   "ipic-internal": "ReFarm team (Agronomy Team, Department Involved)",
-  "sow": "ReFarm team (BD, Agronomy: 6 til the end)",
+  "sow": "ReFarm team (BD, Agronomy: 6 till the end)",
   "sow-internal": "ReFarm team (Agronomy)",
   "sales-activity-card": "ReFarm team (Sales Department)",
   "pemc": "ReFarm team (BD)",
