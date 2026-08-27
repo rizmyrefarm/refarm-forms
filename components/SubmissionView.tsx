@@ -31,7 +31,7 @@ export const SubmissionView: React.FC<SubmissionViewProps> = ({
         method: "DELETE",
       });
       if (res.ok) {
-        router.push("/admin");
+        router.push(`/admin/forms/${submission.formSlug}`);
         router.refresh();
       } else {
         alert("Failed to delete submission.");
@@ -47,11 +47,11 @@ export const SubmissionView: React.FC<SubmissionViewProps> = ({
       {/* Top action toolbar */}
       <div className="toolbar sticky top-0 z-50 bg-[#14532d] text-white flex items-center gap-3 px-4 py-2.5 shadow-md no-print">
         <Link
-          href="/admin"
+          href={`/admin/forms/${submission.formSlug}`}
           className="flex items-center gap-1 text-xs font-semibold text-emerald-200 hover:text-white bg-emerald-950/40 hover:bg-emerald-900/60 px-2.5 py-1.5 rounded-md transition"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Dashboard</span>
+          <span>Submissions</span>
         </Link>
 
         <div className="flex items-center gap-2 font-bold tracking-tight text-sm">

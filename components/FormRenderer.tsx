@@ -255,8 +255,12 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
       });
 
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Failed to save submission");
+        let errMsg = "Failed to save submission";
+        try {
+          const err = await res.json();
+          errMsg = err.error || errMsg;
+        } catch (e) {}
+        throw new Error(errMsg);
       }
 
       const result = await res.json();
@@ -268,7 +272,7 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
         } catch (e) {}
       }
 
-      setSubmittedId(result.id || submissionId);
+      setSubmittedId(result?.id || submissionId || "saved");
     } catch (err: any) {
       console.error("Submission error:", err);
       // Data remains intact in localStorage for recovery
@@ -336,7 +340,7 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
 
       {/* Submission Success Modal / Banner */}
       {submittedId && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 no-print animate-fade-in">
+        <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 no-print animate-fade-in">
           <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl text-center border border-emerald-100">
             <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <CheckCircle2 className="w-8 h-8 text-[#14532d]" />
@@ -345,28 +349,46 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
               {isEditMode ? "Submission Updated!" : "Form Successfully Submitted!"}
             </h3>
             <p className="text-xs text-gray-600 mb-6">
-              The record has been securely stored in the ReFarm system and is ready for review or export.
+              The record has been securely stored in the ReFarm system.
             </p>
             <div className="flex flex-col sm:flex-row gap-2.5 justify-center">
-              <Link
-                href={`/admin/${submittedId}`}
-                className="inline-flex items-center justify-center gap-1.5 bg-[#14532d] hover:bg-[#0f3d21] text-white px-4 py-2.5 rounded-lg text-xs font-semibold transition"
-              >
-                <span>View Saved Record</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-              <button
-                type="button"
-                onClick={() => {
-                  setSubmittedId(null);
-                  if (!isEditMode) {
-                    window.location.reload();
-                  }
-                }}
-                className="inline-flex items-center justify-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2.5 rounded-lg text-xs font-semibold transition"
-              >
-                <span>{isEditMode ? "Continue Editing" : "Submit Another"}</span>
-              </button>
+              {isEditMode ? (
+                <>
+                  <Link
+                    href={`/admin/${submittedId}`}
+                    className="inline-flex items-center justify-center gap-1.5 bg-[#14532d] hover:bg-[#0f3d21] text-white px-4 py-2.5 rounded-lg text-xs font-semibold transition"
+                  >
+                    <span>View Saved Record</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setSubmittedId(null)}
+                    className="inline-flex items-center justify-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2.5 rounded-lg text-xs font-semibold transition"
+                  >
+                    <span>Continue Editing</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/"
+                    className="inline-flex items-center justify-center gap-1.5 bg-[#14532d] hover:bg-[#0f3d21] text-white px-4 py-2.5 rounded-lg text-xs font-semibold transition"
+                  >
+                    <span>Back to Forms Hub</span>
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSubmittedId(null);
+                      window.location.reload();
+                    }}
+                    className="inline-flex items-center justify-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2.5 rounded-lg text-xs font-semibold transition"
+                  >
+                    <span>Submit Another</span>
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
