@@ -8,7 +8,7 @@ Internal digital-forms and trial lifecycle platform for **ReFarm Global**. It pr
 
 | # | Slug | Form Title | Category | Description |
 |---|------|------------|----------|-------------|
-| 1 | `sow` | Statement of Work & Trial Protocol | Delivery | Comprehensive trial protocol, baseline assessments, application logs, sampling, and dual sign-off. |
+| 1 | `sow` | Scope of Work & Trial Protocol | Delivery | Comprehensive trial protocol, baseline assessments, application logs, sampling, and dual sign-off. |
 | 2 | `sales-activity-card` | Sales Activity Card | Delivery | Commercial intake, products, fulfilment, client engagement, quote files, payments, and transport logistics. |
 | 3 | `ipic` | Initial Project Information Card | Assessment | External client project intake, problem statement, strategic alignment, and expected value. |
 | 4 | `ipic-internal` | IPIC Internal | Assessment | Multi-department review (Agronomy, R&D, Engineers), SOW tasks, budget, risk avoidance, and 4-party sign-off. |

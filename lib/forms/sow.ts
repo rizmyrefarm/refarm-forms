@@ -2,11 +2,11 @@ import { FormDefinition } from "../types";
 
 export const sowForm: FormDefinition = {
   slug: "sow",
-  title: "Statement of Work & Trial Protocol",
+  title: "Scope of Work & Trial Protocol",
   subtitle: "ReFarm Global",
   category: "delivery",
   description: "Comprehensive scope of work, baseline assessment, application protocols, sampling, monitoring and sign-offs for field trials.",
-  footerText: "ReFarm Global · Statement of Work & Trial Protocol · This document is subject to the laws of Dubai, UAE.",
+  footerText: "ReFarm Global · Scope of Work & Trial Protocol · This document is subject to the laws of Dubai, UAE.",
   metaFields: [
     { key: "proj_name", label: "Project Name / Title", placeholder: "e.g. ReFarm Field Trial — Al Ain" },
     { key: "proj_location", label: "Project Location / Site", placeholder: "Farm, city, country" },
