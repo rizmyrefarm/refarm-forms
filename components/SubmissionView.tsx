@@ -80,16 +80,15 @@ export const SubmissionView: React.FC<SubmissionViewProps> = ({
           <span className="md:hidden">Print</span>
         </Link>
 
-        {/* PDF (Full Design) */}
+        {/* PDF */}
         <button
           type="button"
           onClick={() => window.print()}
           className="inline-flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-2.5 sm:px-3 py-1.5 rounded-md transition"
-          title="Export styled full color PDF"
+          title="Export PDF"
         >
           <FileDown className="w-3.5 h-3.5" />
-          <span className="hidden md:inline">PDF (Full Design)</span>
-          <span className="md:hidden">PDF</span>
+          <span>PDF</span>
         </button>
 
         {/* Edit */}
@@ -218,15 +217,15 @@ export const SubmissionView: React.FC<SubmissionViewProps> = ({
                   <span>Edit Submission</span>
                 </Link>
 
-                {/* PDF (Full Design) Button */}
+                {/* PDF Button */}
                 <button
                   type="button"
                   onClick={() => window.print()}
-                  aria-label="Export or Print Full Design PDF"
+                  aria-label="Export or Print PDF"
                   className="flex-1 sm:min-w-0 h-12 sm:h-14 bg-white hover:bg-[#e6f4ea] active:bg-[#d3ded7] text-[#14532d] border-2 border-[#14532d] font-bold text-sm sm:text-base rounded-xl transition duration-150 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#14532d] focus:ring-offset-2"
                 >
                   <FileDown className="w-4 h-4 text-[#14532d]" />
-                  <span>PDF (Full Design)</span>
+                  <span>PDF</span>
                 </button>
 
                 {/* Print (B&W) Button */}
