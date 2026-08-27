@@ -29,6 +29,17 @@ export const ecofarmPhase02Form: FormDefinition = {
     },
     {
       num: 1,
+      title: "Basic Information",
+      hint: "Provide the essential project, client, and contact information required to identify the trial and the responsible personnel.",
+      fields: [
+        { key: "trial_supervisor", label: "Trial Supervisor (name)", type: "text", placeholder: "Insert name" },
+        { key: "trial_manager", label: "Trial Manager (name)", type: "text", placeholder: "Insert name" },
+        { key: "poc_name", label: "Point of Contact (name)", type: "text", placeholder: "Insert name" },
+        { key: "client_rep", label: "Trial Client Representative", type: "text", placeholder: "Name, Designation, Email & Phone" },
+      ],
+    },
+    {
+      num: 2,
       title: "Water Evaluation",
       hint: "Evaluates availability, quality, and reliability of water resources at the site.",
       fields: [
@@ -56,7 +67,7 @@ export const ecofarmPhase02Form: FormDefinition = {
       ],
     },
     {
-      num: 2,
+      num: 3,
       title: "Infrastructure Assessment",
       hint: "Evaluate availability and condition of existing infrastructure required for implementation.",
       fields: [
@@ -71,7 +82,7 @@ export const ecofarmPhase02Form: FormDefinition = {
       ],
     },
     {
-      num: 3,
+      num: 4,
       title: "Soil Evaluation",
       hint: "Evaluate physical and chemical soil properties to determine remediation and product dosage.",
       fields: [
@@ -96,7 +107,7 @@ export const ecofarmPhase02Form: FormDefinition = {
       ],
     },
     {
-      num: 4,
+      num: 5,
       title: "Infrastructure Gap Analysis",
       hint: "Identify missing infrastructure components and estimated costs (AED) to prepare the site.",
       fields: [
@@ -128,7 +139,7 @@ export const ecofarmPhase02Form: FormDefinition = {
       ],
     },
     {
-      num: 5,
+      num: 6,
       title: "Risk Assessment",
       hint: "Evaluate potential risks that may affect project execution across key operational domains.",
       fields: [
@@ -163,7 +174,7 @@ export const ecofarmPhase02Form: FormDefinition = {
       ],
     },
     {
-      num: 6,
+      num: 7,
       title: "Overall Opportunity Scoring",
       hint: "Score each category from 1 to 10 based on technical assessment, resources, and project objectives.",
       fields: [
