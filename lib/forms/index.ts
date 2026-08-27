@@ -62,3 +62,17 @@ export const FORM_CATEGORIES: { key: FormCategory; label: string; description: s
     description: "Performance tracking, 5-point evaluation cards, and issue resolution cards.",
   },
 ];
+
+export const FORM_RESPONSIBLE_MAP: Record<string, string> = {
+  "ecofarm-phase-0-1": "Client & ReFarm team",
+  "ecofarm-phase-0-2": "ReFarm team (Agronomy Team)",
+  "ecofarm-phase-0-3": "ReFarm team (BD, Sales)",
+  "ipic": "Client",
+  "ipic-internal": "ReFarm team (Agronomy Team, Department Involved)",
+  "sow": "ReFarm team (BD, Agronomy: 6 til the end)",
+  "sow-internal": "ReFarm team (Agronomy)",
+  "sales-activity-card": "ReFarm team (Sales Department)",
+  "pemc": "ReFarm team (BD)",
+  "challenge-card": "ReFarm team (Agronomy team or department responsible)",
+};
+

@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { FORMS } from "@/lib/forms";
+import { FORMS, FORM_RESPONSIBLE_MAP } from "@/lib/forms";
 import { db } from "@/lib/db";
 import { ChevronRight, ArrowLeft } from "lucide-react";
 import { CopyFormLinkButton } from "@/components/admin/CopyFormLinkButton";
@@ -38,16 +38,24 @@ export default async function AdminHomePage() {
     <div className="bg-white rounded-xl border border-[#d3ded7] shadow-sm overflow-hidden divide-y divide-[#d3ded7]">
       {forms.map((form) => {
         const count = countsMap[form.slug] || 0;
+        const responsible = FORM_RESPONSIBLE_MAP[form.slug];
         return (
           <div
             key={form.slug}
-            className="group relative flex items-center justify-between min-h-[56px] px-4 sm:px-5 py-3 hover:bg-[#f2f9f4] active:bg-[#e6f4ea] transition duration-150"
+            className="group relative flex items-center justify-between min-h-[60px] px-4 sm:px-5 py-3 hover:bg-[#f2f9f4] active:bg-[#e6f4ea] transition duration-150"
           >
             <Link
               href={`/admin/forms/${form.slug}`}
-              className="flex-1 text-[13px] sm:text-sm font-medium text-[#1a1f1c] group-hover:text-[#14532d] transition pr-3 leading-snug focus:outline-none focus:underline"
+              className="flex-1 pr-3 min-w-0 focus:outline-none focus:underline"
             >
-              {form.title}
+              <div className="text-[13px] sm:text-sm font-medium text-[#1a1f1c] group-hover:text-[#14532d] transition leading-snug">
+                {form.title}
+              </div>
+              {responsible && (
+                <div className="text-[11px] text-[#5b6b60] group-hover:text-[#1b6b3a] font-normal mt-0.5 leading-tight">
+                  <span className="text-gray-400">Filled by:</span> {responsible}
+                </div>
+              )}
             </Link>
 
             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">

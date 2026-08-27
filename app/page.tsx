@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { FORMS } from "@/lib/forms";
+import { FORMS, FORM_RESPONSIBLE_MAP } from "@/lib/forms";
 import { ChevronRight } from "lucide-react";
 
 export const dynamic = "force-static";
@@ -13,21 +13,31 @@ export default function HomePage() {
 
   const FormList = ({ forms }: { forms: typeof FORMS }) => (
     <div className="bg-white rounded-xl border border-[#d3ded7] shadow-sm overflow-hidden divide-y divide-[#d3ded7]">
-      {forms.map((form) => (
-        <Link
-          key={form.slug}
-          href={`/${form.slug}`}
-          className="group flex items-center justify-between min-h-[54px] px-4 sm:px-5 py-3 hover:bg-[#f2f9f4] active:bg-[#e6f4ea] transition duration-150 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#2f9e44]"
-        >
-          <span className="text-[13px] sm:text-sm font-medium text-[#1a1f1c] group-hover:text-[#14532d] transition pr-3 leading-snug">
-            {form.title}
-          </span>
-          <ChevronRight
-            className="w-4 h-4 text-[#5b6b60] group-hover:text-[#14532d] group-hover:translate-x-0.5 transition-transform flex-shrink-0"
-            aria-hidden="true"
-          />
-        </Link>
-      ))}
+      {forms.map((form) => {
+        const responsible = FORM_RESPONSIBLE_MAP[form.slug];
+        return (
+          <Link
+            key={form.slug}
+            href={`/${form.slug}`}
+            className="group flex items-center justify-between min-h-[58px] px-4 sm:px-5 py-3 hover:bg-[#f2f9f4] active:bg-[#e6f4ea] transition duration-150 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#2f9e44]"
+          >
+            <div className="flex-1 pr-3 min-w-0">
+              <div className="text-[13px] sm:text-sm font-medium text-[#1a1f1c] group-hover:text-[#14532d] transition leading-snug">
+                {form.title}
+              </div>
+              {responsible && (
+                <div className="text-[11px] text-[#5b6b60] group-hover:text-[#1b6b3a] font-normal mt-0.5 leading-tight">
+                  <span className="text-gray-400">Filled by:</span> {responsible}
+                </div>
+              )}
+            </div>
+            <ChevronRight
+              className="w-4 h-4 text-[#5b6b60] group-hover:text-[#14532d] group-hover:translate-x-0.5 transition-transform flex-shrink-0"
+              aria-hidden="true"
+            />
+          </Link>
+        );
+      })}
     </div>
   );
 
