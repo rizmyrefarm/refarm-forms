@@ -10,7 +10,7 @@ export const ecofarmPhase02Form: FormDefinition = {
   metaFields: [
     { key: "proj_name", label: "Project", placeholder: "Full project name" },
     { key: "client_name", label: "Client", placeholder: "Full name of client" },
-    { key: "date", label: "Date", type: "date" },
+    { key: "date", label: "Site Visit Date", type: "date" },
     { key: "location", label: "Location", placeholder: "Site location & coordinates" },
   ],
   sections: [
