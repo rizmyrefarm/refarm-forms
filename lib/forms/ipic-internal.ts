@@ -37,6 +37,7 @@ export const ipicInternalForm: FormDefinition = {
         { key: "key_person", label: "Key Person", type: "text", gridCols: 2, placeholder: "Insert Name" },
         { key: "trial_manager", label: "Trial Manager", type: "text", gridCols: 2, placeholder: "Insert Name" },
         { key: "trial_supervisor", label: "Trial Supervisor", type: "text", gridCols: 2, placeholder: "Insert Name" },
+        { key: "trial_client_supervisor", label: "Trial Client Supervisor", type: "text", gridCols: 2, placeholder: "Insert Name" },
       ],
     },
     {
