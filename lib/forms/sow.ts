@@ -10,7 +10,6 @@ export const sowForm: FormDefinition = {
   metaFields: [
     { key: "proj_name", label: "Project Name / Title", placeholder: "e.g. ReFarm Field Trial — Al Ain" },
     { key: "proj_location", label: "Project Location / Site", placeholder: "Farm, city, country" },
-    { key: "proj_ref", label: "SOW Reference No.", placeholder: "RF-SOW-2026-000" },
     { key: "proj_client", label: "Client / Partner", placeholder: "Client organisation" },
     { key: "proj_date", label: "Date", type: "date" },
   ],
