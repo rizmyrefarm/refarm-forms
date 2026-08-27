@@ -72,6 +72,7 @@ export interface FormSection {
   num?: number | string;
   title: string;
   badge?: string;
+  badgeVariant?: "green" | "amber" | "blue";
   hint?: string;
   conditional?: ConditionalRule;
   fields: FormField[];

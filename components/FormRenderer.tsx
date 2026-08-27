@@ -418,7 +418,14 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
                       <h2 className="sec-title">{section.title}</h2>
                     </div>
                     {section.badge && (
-                      <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#e6f4ea] text-[#14532d] border border-[#2f9e44]/40 flex-shrink-0 mb-0.5">
+                      <span
+                        className={cn(
+                          "text-[11px] font-semibold px-2.5 py-0.5 rounded-full border flex-shrink-0 mb-0.5",
+                          section.badgeVariant === "amber" || section.badge.toLowerCase().includes("client")
+                            ? "bg-[#fff8e6] text-[#7a5c00] border-[#e6c766]"
+                            : "bg-[#e6f4ea] text-[#14532d] border-[#2f9e44]/40"
+                        )}
+                      >
                         {section.badge}
                       </span>
                     )}

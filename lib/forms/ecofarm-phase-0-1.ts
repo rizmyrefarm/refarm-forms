@@ -34,6 +34,8 @@ export const ecofarmPhase01Form: FormDefinition = {
     {
       num: 1,
       title: "Stakeholder Information",
+      badge: "To be filled by Client",
+      badgeVariant: "amber",
       hint: "Identify main stakeholders, farm owners, client representatives, and ReFarm technical contacts.",
       fields: [
         { key: "farm_owner", label: "Farm Owner", type: "text", gridCols: 2, placeholder: "Individual or entity name" },
@@ -47,6 +49,8 @@ export const ecofarmPhase01Form: FormDefinition = {
     {
       num: 2,
       title: "Land & Site Evaluation",
+      badge: "To be filled by Client",
+      badgeVariant: "amber",
       hint: "Evaluate physical characteristics, legal status, and development potential of the site.",
       fields: [
         {
@@ -111,6 +115,8 @@ export const ecofarmPhase01Form: FormDefinition = {
     {
       num: 3,
       title: "Climate & Crop Suitability",
+      badge: "To be filled by Client",
+      badgeVariant: "amber",
       hint: "Evaluate environmental conditions and determine suitable agricultural opportunities.",
       fields: [
         { key: "climate_zone", label: "Climate Zone", type: "text", gridCols: 3, placeholder: "e.g. Arid / Hyper-arid" },
