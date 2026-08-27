@@ -12,7 +12,6 @@ export const sowForm: FormDefinition = {
     { key: "proj_location", label: "Project Location / Site", placeholder: "Farm, city, country" },
     { key: "proj_ref", label: "SOW Reference No.", placeholder: "RF-SOW-2026-000" },
     { key: "proj_client", label: "Client / Partner", placeholder: "Client organisation" },
-    { key: "proj_crop", label: "Crop / Commodity", placeholder: "e.g. Tomato, Date Palm" },
     { key: "proj_date", label: "Date", type: "date" },
   ],
   sections: [
