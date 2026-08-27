@@ -130,6 +130,8 @@ export const SubmissionView: React.FC<SubmissionViewProps> = ({
           <FormHeader
             title={formDef.title}
             subtitle={formDef.subtitle}
+            badge={formDef.headerBadge}
+            badgeVariant={formDef.headerBadgeVariant}
             metaFields={formDef.metaFields}
             metaValues={formData.meta || {}}
             readOnly={true}

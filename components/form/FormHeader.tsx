@@ -2,10 +2,13 @@
 
 import React from "react";
 import { HeaderField } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface FormHeaderProps {
   title: string;
   subtitle?: string;
+  badge?: string;
+  badgeVariant?: "green" | "amber" | "blue";
   metaFields: HeaderField[];
   metaValues: Record<string, any>;
   onChange?: (key: string, value: any) => void;
@@ -15,6 +18,8 @@ interface FormHeaderProps {
 export const FormHeader: React.FC<FormHeaderProps> = ({
   title,
   subtitle = "ReFarm Global",
+  badge,
+  badgeVariant,
   metaFields,
   metaValues,
   onChange,
@@ -35,8 +40,22 @@ export const FormHeader: React.FC<FormHeaderProps> = ({
           <h1 className="text-xl md:text-2xl font-bold tracking-wide m-0 text-white">
             {title}
           </h1>
-          <div className="text-xs uppercase tracking-widest text-emerald-100 opacity-90 mt-0.5">
-            {subtitle}
+          <div className="flex items-center gap-2 flex-wrap mt-1">
+            <span className="text-xs uppercase tracking-widest text-emerald-100 opacity-90">
+              {subtitle}
+            </span>
+            {badge && (
+              <span
+                className={cn(
+                  "text-[10.5px] font-semibold px-2.5 py-0.5 rounded-full border shadow-sm",
+                  badgeVariant === "amber" || badge.toLowerCase().includes("client")
+                    ? "bg-[#fff8e6] text-[#7a5c00] border-[#e6c766]"
+                    : "bg-[#e6f4ea] text-[#14532d] border-[#2f9e44]/40"
+                )}
+              >
+                {badge}
+              </span>
+            )}
           </div>
         </div>
       </div>

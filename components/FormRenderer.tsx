@@ -394,6 +394,8 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
           <FormHeader
             title={formDef.title}
             subtitle={formDef.subtitle}
+            badge={formDef.headerBadge}
+            badgeVariant={formDef.headerBadgeVariant}
             metaFields={formDef.metaFields}
             metaValues={formData.meta}
             onChange={handleMetaChange}

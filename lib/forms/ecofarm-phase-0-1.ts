@@ -4,6 +4,8 @@ export const ecofarmPhase01Form: FormDefinition = {
   slug: "ecofarm-phase-0-1",
   title: "EcoFarm Phase 0.1: Initial Assessment & Project Qualification",
   subtitle: "Phase 0.1 · Initial Assessment (7 Working Days)",
+  headerBadge: "To be filled by Client",
+  headerBadgeVariant: "amber",
   category: "assessment",
   description: "Evaluate site conditions, stakeholder contacts, land status, climate suitability, photo evidence, and ReFarm technology opportunities.",
   footerText: "ReFarm Global · EcoFarm Phase 0.1 · Confidential & Proprietary",

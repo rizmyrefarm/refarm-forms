@@ -246,9 +246,16 @@ export const CleanPrintDocument: React.FC<Props> = ({ submission, formDef }) => 
       <article className="max-w-4xl mx-auto text-black">
         {/* Document Header */}
         <header className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight text-black mb-1.5">
-            {formDef.title}
-          </h1>
+          <div className="flex items-center justify-between gap-2 flex-wrap mb-1.5">
+            <h1 className="text-2xl font-bold tracking-tight text-black">
+              {formDef.title}
+            </h1>
+            {formDef.headerBadge && (
+              <span className="text-[10px] font-semibold uppercase tracking-wider border border-black px-1.5 py-0.5 rounded">
+                {formDef.headerBadge}
+              </span>
+            )}
+          </div>
           <div className="text-xs text-gray-800 flex flex-wrap items-center gap-y-1 gap-x-2 font-medium">
             <span>
               <b>Project:</b> {submission.projectName || "—"}

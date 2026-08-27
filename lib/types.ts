@@ -92,6 +92,8 @@ export interface FormDefinition {
   slug: string;
   title: string;
   subtitle?: string;
+  headerBadge?: string;
+  headerBadgeVariant?: "green" | "amber" | "blue";
   category: FormCategory;
   duration?: string;
   description: string;
