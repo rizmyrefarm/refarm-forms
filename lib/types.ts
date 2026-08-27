@@ -53,6 +53,8 @@ export interface SignCard {
 export interface FormField {
   key: string;
   label?: string;
+  badge?: string;
+  badgeVariant?: "green" | "amber" | "blue";
   hint?: string;
   subhead?: string;
   type: FieldType;

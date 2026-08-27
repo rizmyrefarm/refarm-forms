@@ -314,8 +314,13 @@ export const CleanPrintDocument: React.FC<Props> = ({ submission, formDef }) => 
                   <div key={field.key} className="text-xs break-inside-avoid">
                     {field.type !== "table" && field.type !== "sign-block" && field.type !== "note" ? (
                       <div className="flex flex-col sm:flex-row sm:items-baseline gap-1">
-                        <span className="font-bold text-gray-900 min-w-[220px]">
-                          {field.label || field.placeholder || field.key}:
+                        <span className="font-bold text-gray-900 min-w-[220px] flex items-center gap-1.5 flex-wrap">
+                          <span>{field.label || field.placeholder || field.key}:</span>
+                          {field.badge && (
+                            <span className="text-[9px] font-semibold uppercase tracking-wider border border-black px-1 rounded">
+                              {field.badge}
+                            </span>
+                          )}
                         </span>
                         <span className="text-gray-900 whitespace-pre-wrap flex-1">
                           {renderFieldValue(field)}

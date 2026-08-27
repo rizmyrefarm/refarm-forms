@@ -151,9 +151,23 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
     <div className={cn("form-field-wrapper mt-3", condClass)}>
       {field.subhead && <div className="subhead">{field.subhead}</div>}
       {field.label && (
-        <label className="block text-xs font-semibold text-[#14532d] mb-1">
-          {field.label}
-        </label>
+        <div className="flex items-center justify-between gap-2 mb-1 flex-wrap">
+          <label className="block text-xs font-semibold text-[#14532d]">
+            {field.label}
+          </label>
+          {field.badge && (
+            <span
+              className={cn(
+                "text-[10px] font-semibold px-2 py-0.5 rounded-full border flex-shrink-0",
+                field.badgeVariant === "amber" || field.badge.toLowerCase().includes("client")
+                  ? "bg-[#fff8e6] text-[#7a5c00] border-[#e6c766]"
+                  : "bg-[#e6f4ea] text-[#14532d] border-[#2f9e44]/40"
+              )}
+            >
+              {field.badge}
+            </span>
+          )}
+        </div>
       )}
       {field.hint && <p className="hint">{field.hint}</p>}
 
