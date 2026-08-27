@@ -10,7 +10,7 @@ export const ipicForm: FormDefinition = {
   metaFields: [
     { key: "proj_name", label: "Project Name", placeholder: "Full project name" },
     { key: "client_name", label: "Client Name", placeholder: "Full name of the client" },
-    { key: "visit_date", label: "Trial Site Visit Date", type: "date" },
+    { key: "date", label: "Date", type: "date" },
     { key: "location", label: "Location", placeholder: "GPS coordinates, county or Emirate" },
   ],
   sections: [
