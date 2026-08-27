@@ -6,7 +6,7 @@ import { FormDefinition, SavedSubmission } from "@/lib/types";
 import { isConditionMet, cn, formatDateTime } from "@/lib/utils";
 import { FormHeader } from "./form/FormHeader";
 import { FieldRenderer } from "./form/FieldRenderer";
-import { ArrowLeft, Printer, Edit, ShieldCheck, Trash2 } from "lucide-react";
+import { ArrowLeft, Printer, Edit, ShieldCheck, Trash2, FileDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface SubmissionViewProps {
@@ -45,10 +45,10 @@ export const SubmissionView: React.FC<SubmissionViewProps> = ({
   return (
     <div className="min-h-screen bg-[#eef2ef] pb-16">
       {/* Top action toolbar */}
-      <div className="toolbar sticky top-0 z-50 bg-[#14532d] text-white flex items-center gap-3 px-4 py-2.5 shadow-md no-print">
+      <div className="toolbar sticky top-0 z-50 bg-[#14532d] text-white flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 shadow-md no-print flex-wrap">
         <Link
           href={`/admin/forms/${submission.formSlug}`}
-          className="flex items-center gap-1 text-xs font-semibold text-emerald-200 hover:text-white bg-emerald-950/40 hover:bg-emerald-900/60 px-2.5 py-1.5 rounded-md transition"
+          className="flex items-center gap-1 text-xs font-semibold text-emerald-200 hover:text-white bg-emerald-950/40 hover:bg-emerald-900/60 px-2.5 py-1.5 rounded-md transition flex-shrink-0"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Submissions</span>
@@ -64,29 +64,44 @@ export const SubmissionView: React.FC<SubmissionViewProps> = ({
             />
           </div>
           <span className="hidden sm:inline text-emerald-100 font-semibold text-xs">· {formDef.title}</span>
-          <span className="sm:hidden">View</span>
+          <span className="sm:hidden text-xs">View</span>
         </div>
 
         <div className="flex-1" />
 
+        {/* Print (B&W) */}
+        <Link
+          href={`/admin/${submission.id}/print`}
+          className="inline-flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-2.5 sm:px-3 py-1.5 rounded-md transition"
+          title="Print basic black & white document"
+        >
+          <Printer className="w-3.5 h-3.5" />
+          <span className="hidden md:inline">Print (B&W)</span>
+          <span className="md:hidden">Print</span>
+        </Link>
+
+        {/* PDF (Full Design) */}
         <button
           type="button"
           onClick={() => window.print()}
-          className="inline-flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-3 py-1.5 rounded-md transition"
+          className="inline-flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-2.5 sm:px-3 py-1.5 rounded-md transition"
+          title="Export styled full color PDF"
         >
-          <Printer className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Export / Print PDF</span>
-          <span className="sm:hidden">Print</span>
+          <FileDown className="w-3.5 h-3.5" />
+          <span className="hidden md:inline">PDF (Full Design)</span>
+          <span className="md:hidden">PDF</span>
         </button>
 
+        {/* Edit */}
         <Link
           href={`/admin/${submission.id}/edit`}
-          className="inline-flex items-center gap-1.5 bg-[#2f9e44] hover:bg-[#268a3a] text-white text-xs font-semibold px-3.5 py-1.5 rounded-md transition"
+          className="inline-flex items-center gap-1.5 bg-[#2f9e44] hover:bg-[#268a3a] text-white text-xs font-semibold px-3 py-1.5 rounded-md transition"
         >
           <Edit className="w-3.5 h-3.5" />
           <span>Edit</span>
         </Link>
 
+        {/* Delete */}
         <button
           type="button"
           onClick={handleDelete}
@@ -105,20 +120,20 @@ export const SubmissionView: React.FC<SubmissionViewProps> = ({
             <span className="bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded text-[11px] uppercase tracking-wider">
               {submission.status}
             </span>
-            <span className="text-gray-300">•</span>
+            <span className="text-gray-400">·</span>
             <span className="text-gray-500 font-mono text-[11px]">ID: {submission.id}</span>
           </div>
-          <div className="flex flex-wrap items-center gap-3 text-[11.5px]">
+          <div className="flex items-center gap-4 text-[11.5px] text-gray-500">
             <span>
-              Submitted: <b>{formatDateTime(submission.createdAt)}</b>
+              Submitted:{" "}
+              <b className="text-gray-700 font-medium">{formatDateTime(submission.createdAt)}</b>
             </span>
-            {submission.updatedAt &&
-              new Date(submission.updatedAt).getTime() - new Date(submission.createdAt).getTime() > 1000 && (
-                <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-900 border border-amber-200 px-2 py-0.5 rounded font-medium">
-                  <span>Last Edited:</span>
-                  <b>{formatDateTime(submission.updatedAt)}</b>
-                </span>
-              )}
+            {submission.updatedAt !== submission.createdAt && (
+              <span>
+                (Edited:{" "}
+                <b className="text-gray-700 font-medium">{formatDateTime(submission.updatedAt)}</b>)
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -173,7 +188,7 @@ export const SubmissionView: React.FC<SubmissionViewProps> = ({
                   <div className="space-y-4">
                     {section.fields.map((field) => {
                       const isFieldEnabled = isConditionMet(field.conditional, formData);
-                      if (!isFieldEnabled) return null;
+                      if (!isFieldEnabled) return null; // Hide conditional field if condition not met
 
                       return (
                         <FieldRenderer
@@ -193,26 +208,36 @@ export const SubmissionView: React.FC<SubmissionViewProps> = ({
 
             {/* Bottom Action Bar */}
             <div className="mt-10 pt-6 border-t border-[#d3ded7] no-print">
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
-                {/* Edit Submission Button (~65% width on desktop) */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                {/* Edit Submission Button */}
                 <Link
                   href={`/admin/${submission.id}/edit`}
-                  className="flex-[2] sm:min-w-0 h-14 sm:h-[58px] bg-[#2f9e44] hover:bg-[#268a3a] active:bg-[#1b6b3a] text-white font-bold text-base sm:text-lg rounded-xl shadow-sm transition duration-150 flex items-center justify-center gap-2.5 focus:outline-none focus:ring-2 focus:ring-[#2f9e44] focus:ring-offset-2"
+                  className="flex-[1.5] sm:min-w-0 h-12 sm:h-14 bg-[#2f9e44] hover:bg-[#268a3a] active:bg-[#1b6b3a] text-white font-bold text-sm sm:text-base rounded-xl shadow-sm transition duration-150 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#2f9e44] focus:ring-offset-2"
                 >
-                  <Edit className="w-5 h-5" />
+                  <Edit className="w-4 h-4" />
                   <span>Edit Submission</span>
                 </Link>
 
-                {/* Export / Print PDF Button (~35% width on desktop) */}
+                {/* PDF (Full Design) Button */}
                 <button
                   type="button"
                   onClick={() => window.print()}
-                  aria-label="Export or Print PDF"
-                  className="flex-[1] sm:min-w-0 h-14 sm:h-[58px] bg-white hover:bg-[#e6f4ea] active:bg-[#d3ded7] text-[#14532d] border-2 border-[#14532d] font-bold text-base sm:text-lg rounded-xl transition duration-150 flex items-center justify-center gap-2.5 focus:outline-none focus:ring-2 focus:ring-[#14532d] focus:ring-offset-2"
+                  aria-label="Export or Print Full Design PDF"
+                  className="flex-1 sm:min-w-0 h-12 sm:h-14 bg-white hover:bg-[#e6f4ea] active:bg-[#d3ded7] text-[#14532d] border-2 border-[#14532d] font-bold text-sm sm:text-base rounded-xl transition duration-150 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#14532d] focus:ring-offset-2"
                 >
-                  <Printer className="w-5 h-5 text-[#14532d]" />
-                  <span>Export / Print PDF</span>
+                  <FileDown className="w-4 h-4 text-[#14532d]" />
+                  <span>PDF (Full Design)</span>
                 </button>
+
+                {/* Print (B&W) Button */}
+                <Link
+                  href={`/admin/${submission.id}/print`}
+                  aria-label="Print basic black and white document"
+                  className="flex-1 sm:min-w-0 h-12 sm:h-14 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-800 border-2 border-gray-400 font-bold text-sm sm:text-base rounded-xl transition duration-150 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                >
+                  <Printer className="w-4 h-4 text-gray-700" />
+                  <span>Print (B&W)</span>
+                </Link>
               </div>
             </div>
           </div>
