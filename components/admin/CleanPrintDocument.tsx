@@ -298,9 +298,16 @@ export const CleanPrintDocument: React.FC<Props> = ({ submission, formDef }) => 
         <div className="space-y-6">
           {formDef.sections.map((section, sIdx) => (
             <section key={section.id || sIdx} className="page-section">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-black border-b border-black pb-1 mb-3">
-                {section.title}
-              </h2>
+              <div className="flex items-center justify-between border-b border-black pb-1 mb-3">
+                <h2 className="text-sm font-bold uppercase tracking-wider text-black">
+                  {section.title}
+                </h2>
+                {section.badge && (
+                  <span className="text-[10px] font-semibold uppercase tracking-wider border border-black px-1.5 py-0.5 rounded">
+                    {section.badge}
+                  </span>
+                )}
+              </div>
 
               <div className="space-y-3">
                 {section.fields.map((field) => (

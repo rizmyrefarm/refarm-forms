@@ -410,11 +410,18 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
                   key={section.id || sIdx}
                   className={cn("mt-7 first:mt-3", sectionClass)}
                 >
-                  <div className="sec-head">
-                    {section.num !== undefined && (
-                      <span className="sec-num">{section.num}</span>
+                  <div className="sec-head flex items-center justify-between flex-wrap gap-2">
+                    <div className="flex items-baseline gap-2.5">
+                      {section.num !== undefined && (
+                        <span className="sec-num">{section.num}</span>
+                      )}
+                      <h2 className="sec-title">{section.title}</h2>
+                    </div>
+                    {section.badge && (
+                      <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#e6f4ea] text-[#14532d] border border-[#2f9e44]/40 flex-shrink-0 mb-0.5">
+                        {section.badge}
+                      </span>
                     )}
-                    <h2 className="sec-title">{section.title}</h2>
                   </div>
                   {section.hint && <p className="hint">{section.hint}</p>}
 

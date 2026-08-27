@@ -71,6 +71,7 @@ export interface FormSection {
   id?: string;
   num?: number | string;
   title: string;
+  badge?: string;
   hint?: string;
   conditional?: ConditionalRule;
   fields: FormField[];

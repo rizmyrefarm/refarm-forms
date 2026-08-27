@@ -129,6 +129,7 @@ export const ecofarmPhase01Form: FormDefinition = {
     {
       num: 4,
       title: "Site Visit Photo Register",
+      badge: "To be filled by ReFarm",
       hint: "Documents visual evidence collected during site visit to verify conditions and infrastructure.",
       fields: [
         {
@@ -160,6 +161,7 @@ export const ecofarmPhase01Form: FormDefinition = {
     {
       num: 5,
       title: "ReFarm Technology Opportunity Matrix",
+      badge: "To be filled by ReFarm",
       hint: "Identify which ReFarm technologies could provide value to the project based on site conditions.",
       fields: [
         {
